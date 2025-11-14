@@ -1,0 +1,22 @@
+<!-- popup.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LHDN Automation</title>
+    <style>
+        body { width: 350px; font-family: sans-serif; padding: 15px; }
+        textarea { width: 100%; height: 250px; margin-bottom: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; }
+        button:hover { opacity: 0.9; }
+        #msg { margin-top: 10px; font-size: 14px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h3>LHDN Multi-Page Automation</h3>
+    <textarea id="jsonData" placeholder='Paste your complete JSON data here...'></textarea>
+    <button id="startBtn">Start Full Automation</button>
+    <div id="msg"></div>
+    <!-- REMOVED type="module" -->
+    <script src="popup.js"></script>
+</body>
+</html>
