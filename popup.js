@@ -23,12 +23,13 @@ const pageMappings = {
         }
     },
     Perniagaan: {
-        waitForElement: '#MainContent_txtKodAktiviti_1',
+        waitForElement: '#txtNotel',
         nextButtonSelector: '#MainContent_btnNext',
         fields: {
-            "B1_Row1_Business_Activity_Code": "MainContent_txtKodAktiviti_1",
-            "B1_Row1_Core_Income_Activity_Yes": "MainContent_ddlCIGA_1",
-            "B1_Row1_Business_Activity_Status_Active": "MainContent_ddlStatus_1",
+            "C1_Registered_Address_line1": "MainContent_txtDaftar_Alamat1",
+            "C1_Registered_Address_line2": "MainContent_txtDaftar_Alamat2",
+            "Telephone_no": "txtNotel",
+            "Email": "txtEmelDaftar"
             // ... etc.
         }
     },
