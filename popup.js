@@ -675,7 +675,7 @@
 }
 
 const pageSequence = [
-    'MakAsas',
+    'MakAsas_Trigger','MakAsas_Fill',
     'MakSya_Top','MakOfc',
     'MakSya_Syer','MakSyer',
     'MakSya_Pemunya','MakPemunya',
