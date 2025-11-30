@@ -452,11 +452,11 @@
         nextButtonSelector: null,
         fieldOrder: [
             "D1_Subject_to_CbCR",
-            "D2_Reporting_Entity_Status"
+            "D1_Subject_as"
         ],
         fields: {
             "D1_Subject_to_CbCR": "MainContent_ddlRcbcra",
-            "D2_Reporting_Entity_Status": "MainContent_ddlRcbcrb"
+            "D1_Subject_as": "MainContent_ddlRcbcrb"
         }
     },
 
@@ -468,7 +468,7 @@
     },
 
    MakLain_Reporting: {
-        shouldSkip: (data) => data.D2_Reporting_Entity_Status !== '1',
+        shouldSkip: (data) => data.D1_Subject_as !== '1',
         waitForElement: '#MainContent_txtG5b_NamaMNE', 
         nextButtonSelector: '#MainContent_btnNext',
         fieldOrder: [
@@ -488,7 +488,7 @@
     },
 
     MakLain_NonReporting: {
-        shouldSkip: (data) => data.D2_Reporting_Entity_Status !== '2',
+        shouldSkip: (data) => data.D1_Subject_as !== '2',
         waitForElement: '#MainContent_txtG5b_NamaMNE', 
         nextButtonSelector: '#MainContent_btnNext',
         fieldOrder: [
@@ -516,7 +516,7 @@
     },
 
     MakLain_NonReporting_Part1: {
-        shouldSkip: (data) => data.D2_Reporting_Entity_Status !== '2',
+        shouldSkip: (data) => data.D1_Subject_as !== '2',
         waitForElement: '#MainContent_txtG5b_NamaMNE', 
         nextButtonSelector: null,
         fieldOrder: [
@@ -540,7 +540,7 @@
     },
 
     MakLain_NonReporting_Part2: {
-        shouldSkip: (data) => data.D2_Reporting_Entity_Status !== '2',
+        shouldSkip: (data) => data.D1_Subject_as !== '2',
         waitForElement: '#MainContent_txtG5b_NamaMuktamad', 
         nextButtonSelector: '#MainContent_btnNext',
         fieldOrder: [
@@ -1061,7 +1061,7 @@ function fillPageWithData(data, fieldMap, rowIndex) {
                         await delay(3000);
                     }
                     else {
-                        await delay(700); 
+                        // await delay(700); 
                     }
                     count++;
                 }
