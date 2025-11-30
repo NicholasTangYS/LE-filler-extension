@@ -58,12 +58,14 @@
     },
 
     MakSya_Top: {
+         shouldSkip: (data) => !data.c3Rows || data.c3Rows.length === 0,
         waitForElement: '#MainContent_btnHKO',
         nextButtonSelector: '#MainContent_btnHKO',
         fields: {}
     },
 
     MakOfc: {
+        shouldSkip: (data) => !data.c3Rows || data.c3Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c3Rows", 
         saveButtonSelector: '#ctl00_MainContent_RptPekongsi_ctl00_linkPekongsiSave',
@@ -109,6 +111,7 @@
     },
 
     MakSyer: {        
+        shouldSkip: (data) => !data.c4Rows || data.c4Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c4Rows", 
         saveButtonSelector: '#ctl00_MainContent_RptPekongsi_ctl00_linkPekongsiSave',
@@ -146,18 +149,21 @@
     },
 
     MakSya_Syer: {
+        shouldSkip: (data) => !data.c4Rows || data.c4Rows.length === 0,
         waitForElement: '#MainContent_btnHKP',
         nextButtonSelector: '#MainContent_btnHKP',
         fields: {}
     },
 
     MakSya_Pemunya: {
+        shouldSkip: (data) => !data.c5Rows || data.c5Rows.length === 0,
         waitForElement:'#MainContent_btnPemunya',
          nextButtonSelector: '#MainContent_btnPemunya',
         fields: {}
     },
 
     MakPemunya:{
+        shouldSkip: (data) => !data.c5Rows || data.c5Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c5Rows", 
         saveButtonSelector: '#ctl00_MainContent_RptPekongsi_ctl00_linkPekongsiSave',
@@ -427,12 +433,14 @@
     },
 
     MakSya_Tuntutan: {
+        shouldSkip: (data) => !data.Generated_Incentive_List || data.Generated_Incentive_List.length === 0,
         waitForElement:'#MainContent_btnTuntutanIn',
         nextButtonSelector: '#MainContent_btnTuntutanIn',
         fields: {}
     },
     
     Tuntutan:{
+        shouldSkip: (data) => !data.Generated_Incentive_List || data.Generated_Incentive_List.length === 0,
         waitForElement: '#MainContent_rptInsentif_txtJenisInsentif_0',
         repeaterKey: "Generated_Incentive_List", 
         saveButtonSelector: '#ctl00_MainContent_rptInsentif_ctl00_linkTuntutanSave',
@@ -548,156 +556,23 @@
             "F7b_Country_of_Residence_UHE"
         ],
         fields: {
-            "F7a_Ultimate_Holding_Entity_Name": "MainContent_txtG5b_NamaMuktamad",
-            "F7b_Country_of_Residence_UHE": "ddlNegMastautin"
+            "C1_Registered_Address_line1": "MainContent_txtDaftar_Alamat1",
+            "C1_Registered_Address_line2": "MainContent_txtDaftar_Alamat2",
+            "Telephone_no": "txtNotel",
+            "Email": "txtEmelDaftar"
+            // ... etc.
         }
     },
+    // Add more page objects here...
+};
+
+// The sequence of pages to process.
+const pageSequence = ['MakAsas', 'Perniagaan'];
 
 
-    MakSya_Final: {
-    waitForElement: '#MainContent_ddlIntKew', 
-    nextButtonSelector: null,
-    fieldOrder: [
-        "D3_Has_Financial_Account_Outside_Malaysia",
-        "D4_Subject_to_AEOI",
-        "C1_Registered_Address_line1",
-        "C1_Registered_Address_line2",
-        "Email",
-        "C1_Correspondence_Address_line1",
-        "C1_Correspondence_Address_line2",
-        "C1_Postcode",
-        "C2_Address_Is_Tax_Agent_or_Trust_Co",
-        "C1_City",
-        "C1_State",
-        "Auditor_Name",
-        "Auditor_Country",
-        "Auditor_Address_line1",
-        "Auditor_Address_line2",
-        "Auditor_Postcode",
-        "Auditor_City",
-        "Auditor_Email",
-        "Auditor_Telephone_no",
-        "Auditor_TIN"
-    ],
-    fields: {
-        // ✅ FIXED: Registered Address (NOW WORKING)
-        "D3_Has_Financial_Account_Outside_Malaysia": "MainContent_ddlIntKew",
-        "D4_Subject_to_AEOI":"MainContent_ddlPerLabuan",
-        "C1_Registered_Address_line1": "MainContent_txtDaftar_Alamat1",
-        "C1_Registered_Address_line2": "MainContent_txtDaftar_Alamat2",
-        "Email": "txtEmelDaftar",
-        "C1_Correspondence_Address_line1": "MainContent_txtF1_Alamat1",
-        "C1_Correspondence_Address_line2": "MainContent_txtF1_Alamat2",
-        "C1_Postcode": "txtF1_Poskod",
-        "C1_City": "txtF1_Bandar",
-        "C1_State": "ddlDaftar_Negeri",
-        "C2_Address_Is_Tax_Agent_or_Trust_Co": "ddlF1_Status",
-        "Auditor_Name": "MainContent_txtS1_Nama",
-        "Auditor_Country": "ddlS2_Negara",
-        "Auditor_Address_line1": "MainContent_txtS2_Alamat1",
-        "Auditor_Address_line2": "MainContent_txtS2_Alamat2",
-        "Auditor_Postcode": "txtS2_Poskod",
-        "Auditor_City": "txtS2_Bandar",
-        "Auditor_Email": "txtS5",
-        "Auditor_Telephone_no": "MainContent_txtS3",
-        "Auditor_TIN": "MainContent_txtS4"
-    }
-},
-
-    // 3. Tax Agent (The Disabled Field Page)
-    MakTaxAgent: {
-        // LOGIC: Skip this whole page if the declarant is a Director (Designation "2")
-        // Adjust the logic if "2" means something else, but based on your request:
-        shouldSkip: (data) => data.Declarant_Designation === '2',
-
-        waitForElement: '#MainContent_txtT2_Alamat1', 
-        nextButtonSelector: '#MainContent_btnNext', 
-        
-        fields: {
-            "Declarant_Address_line1": "MainContent_txtT2_Alamat1",
-            "Declarant_Address_line2": "MainContent_txtT2_Alamat2",
-            "Declarant_Postcode": "txtT2_Poskod",
-            "Declarant_Telephone_no": "MainContent_txtT3",
-            "Declarant_Email": "txtT6",
-        }
-    },
-
-    // Added this back because it was missing
-    MakSubstantif: {
-        // This ID triggers the 2-second delay in the filler function
-        waitForElement: '#MainContent_RptSubs_ddlKod_0', 
-
-        repeaterKey: "b1Rows", 
-        
-        saveButtonSelector: '#ctl00_MainContent_RptSubs_ctl00_linkSubsSave', 
-
-        nextButtonSelector: '#MainContent_btnNext',
-        
-          fieldOrder: [
-        "Business_Activity_Code",
-        "Core_Income_Activity_Yes",
-        "Business_Activity_Status_Active",
-        "No_of_Employees",
-        "Annual_Operating_Expenditure",
-        "Annual_Operating_Expenditure_MAS",
-        "Compliance_with_FPEC",
-        "Compliance_with_CML",
-        "No_of_Employees_Malaysia",
-        "No_of_Related_Company",
-        "Comply_Substantive_Yes",
-        "Amount_of_Net_Loss",
-        "Net_Profits_ex_IP"
-    ],
-        fields: {
-            "Business_Activity_Code": "MainContent_RptSubs_ddlKod_0",
-            "Core_Income_Activity_Yes": "MainContent_RptSubs_ddlSub_Utama_0",
-            "Business_Activity_Status_Active": "MainContent_RptSubs_ddlSub_Niaga_0",
-            "No_of_Employees": "MainContent_RptSubs_txtSub_Full_0",
-            "Annual_Operating_Expenditure": "MainContent_RptSubs_txtSub_Belanja_0",
-            "Annual_Operating_Expenditure_MAS": "MainContent_RptSubs_txtSub_Operasi_0", 
-            "Compliance_with_FPEC": "MainContent_RptSubs_ddlSub_Patuh_0",
-            "Compliance_with_CML": "MainContent_RptSubs_ddlSub_Kawal_0",
-            "No_of_Employees_Malaysia": "MainContent_RptSubs_txtSub_Part_0",
-            "No_of_Related_Company": "MainContent_RptSubs_txtSub_Kaitan_0",
-            "Comply_Substantive_Yes": "MainContent_RptSubs_ddlSub_Syarat_0",
-            "Amount_of_Net_Loss": "MainContent_RptSubs_txtSub_Rugi_0",
-            "Net_Profits_ex_IP": "MainContent_RptSubs_txtSub_Untung_0"
-        }
-    },
-
-
-    Cukai: {
-        nextButtonSelector: '#MainContent_btnSave',
-        fields: {
-            "B5_Zakat_Paid": "MainContent_txtRebat"
-        }
-    },
-}
-
-const pageSequence = [
-    'MakAsas_Trigger','MakAsas_Fill',
-    'MakSya_Top','MakOfc',
-    'MakSya_Syer','MakSyer',
-    'MakSya_Pemunya','MakPemunya',
-    'MakSya_Kewangan','Kewangan',
-    'MakSya_Fin',
-    'MakSya_Subsid_Fill','MakSya_Subsid_Click','MakSubsid',
-    'MakSya_Payment_Fill','MakSya_Payment_Click','MakPayment',
-    'MakSya_Tuntutan','Tuntutan',
-    'MakLain_Fill', 'MakLain_Click',
-    'MakLain_Reporting',
-    'MakLain_NonReporting_Part1',
-    'MakLain_NonReporting_Part2', 
-    'MakSya_Final', 'MakTaxAgent',
-    'MakSubstantif',
-    'Cukai'
-];
-
-
+// PART 2: POPUP LOGIC AND ORCHESTRATOR
 // =================================================================
-// PART 2: MAIN LOGIC
-// =================================================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     const statusDiv = document.getElementById('msg');
     const jsonInput = document.getElementById('jsonData');
     const startButton = document.getElementById('startBtn');
@@ -717,31 +592,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Promise(function(r) { setTimeout(r, ms); }); 
     }
 
-async function runFullAutomation() {
-        const jsonStr = jsonInput ? jsonInput.value : "";
-        if (!jsonStr) return updateStatus("Error: Paste JSON first.", "red");
-
-        let formData;
-        try { 
-            formData = JSON.parse(jsonStr); 
-        } catch (e) { 
-            return updateStatus("Error: Invalid JSON.", "red"); 
+    async function runFullAutomation() {
+        const jsonStr = jsonInput.value;
+        if (!jsonStr) {
+            updateStatus("Error: Please paste JSON data first.", "red");
+            return;
         }
-
-        // --- DATA TRANSFORMATION ---
-        formData.Generated_Incentive_List = [];
-        const addIncentiveRow = (code, amount) => {
-            if (code && String(code).trim() !== "") {
-                formData.Generated_Incentive_List.push({
-                    "Incentive_Code": code,
-                    "Amount_Claimed": amount
-                });
-            }
-        };
-        addIncentiveRow(formData.C12_Row1_Incentive_Code, formData.C12_Row1_Amount_Claimed);
-        addIncentiveRow(formData.C12_Row2_Incentive_Code, formData.C12_Row2_Amount_Claimed);
-        addIncentiveRow(formData.C12_Row3_Incentive_Code, formData.C12_Row3_Amount_Claimed);
-        // ---------------------------
+        let formData;
+        try {
+            formData = JSON.parse(jsonStr);
+        } catch (e) {
+            updateStatus("Error: Invalid JSON format.", "red");
+            return;
+        }
 
         updateStatus("Starting...", "blue");
         const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -751,107 +614,17 @@ async function runFullAutomation() {
             const pageName = pageSequence[i];
             const mapping = pageMappings[pageName];
 
-            if (mapping.shouldSkip && mapping.shouldSkip(formData)) {
-                updateStatus('[' + pageName + '] Skipping (Condition met).');
-                continue; 
-            }
-
-            if (i > 0) {
-                updateStatus('Waiting 3s for ' + pageName + '...');
-                await sleep(3000);
-            }
-
             try {
-                if (mapping.waitForElement) {
-                    await injectScriptWithRetry(tab.id, waitForElementOnPage, [mapping.waitForElement, 15000]);
+                updateStatus(`[${i + 1}] Waiting for page: ${pageName}...`);
+                await injectScript(tab.id, waitForElementOnPage, [mapping.waitForElement, 15000]);
+
+                updateStatus(`[${i + 1}] Filling page: ${pageName}...`);
+                await injectScript(tab.id, fillPageWithData, [formData, mapping.fields]);
+                
+                if (i < pageSequence.length - 1) {
+                    updateStatus(`[${i + 1}] Clicking 'Next'...`);
+                    await injectScript(tab.id, clickElement, [mapping.nextButtonSelector]);
                 }
-
-                // === REPEATER LOGIC ===
-                if (mapping.repeaterKey) {
-                    const items = formData[mapping.repeaterKey] || [];
-                    
-                    if (items.length > 0 && mapping.saveButtonSelector) {
-                        updateStatus('[' + pageName + '] Found ' + items.length + ' items. Starting Loop...');
-                        
-                        for (let j = 0; j < items.length; j++) {
-                            updateStatus('[' + pageName + '] Processing Item ' + (j + 1) + '/' + items.length + '...');
-                            
-                            // ✅ CHANGED: Use fieldOrder if available, otherwise Object.keys
-                            const dynamicFields = {};
-                            const fieldKeys = mapping.fieldOrder || Object.keys(mapping.fields);
-                            
-                            for (let k = 0; k < fieldKeys.length; k++) {
-                                const key = fieldKeys[k];
-                                const val = mapping.fields[key];
-                                
-                                if (val.indexOf("ALL:") === 0) {
-                                    dynamicFields[key] = val;
-                                } 
-                                else if (val.indexOf('_0') !== -1) {
-                                    dynamicFields[key] = val.replace(/_0(?=$|[^0-9])/, '_' + j);
-                                } 
-                                else {
-                                    dynamicFields[key] = val;
-                                }
-                            }
-
-                            // ✅ ADDED: Pass the field order to the filler
-                            dynamicFields.__fieldOrder = fieldKeys;
-
-                            // 2. CALCULATE SAVE BUTTON ID (Strict: ctl00 -> ctl01)
-                            const idxStr = j < 10 ? '0' + j : '' + j;
-                            let dynamicSaveBtn = mapping.saveButtonSelector;
-                            
-                            if (dynamicSaveBtn.indexOf("ctl00_link") !== -1) {
-                                dynamicSaveBtn = dynamicSaveBtn.replace("ctl00_link", 'ctl' + idxStr + '_link');
-                            }
-                            else {
-                                const lastIndex = dynamicSaveBtn.lastIndexOf("ctl00");
-                                if (lastIndex > 0) {
-                                    dynamicSaveBtn = dynamicSaveBtn.substring(0, lastIndex) + 
-                                                     'ctl' + idxStr + 
-                                                     dynamicSaveBtn.substring(lastIndex + 5);
-                                }
-                            }
-
-                            // A. Fill Form
-                            await injectScriptWithRetry(tab.id, fillPageWithData, [items[j], dynamicFields, j]);
-                            await sleep(500);
-                            
-                            // B. Save (Exact ID Mode)
-                            updateStatus('[' + pageName + '] Saving Item ' + (j+1) + '...');
-                            await triggerAspSave(tab.id, dynamicSaveBtn, 0); // Pass 0 because ID is exact
-                            
-                            // C. Wait for Reload
-                            updateStatus('[' + pageName + '] Waiting for server response...');
-                            await sleep(5000); 
-                        }
-                    } else if (items.length > 0) {
-                        await injectScriptWithRetry(tab.id, fillPageWithData, [items[0], mapping.fields, 0]);
-                    }
-                } 
-                // === NORMAL PAGE LOGIC ===
-
-                else {
-                    if (Object.keys(mapping.fields).length > 0) {
-                        const normalFields = mapping.fields;
-                        
-                        // ✅ ADD: Pass fieldOrder for non-repeater pages too
-                        if (mapping.fieldOrder) {
-                            normalFields.__fieldOrder = mapping.fieldOrder;
-                        }
-                        
-                        await injectScriptWithRetry(tab.id, fillPageWithData, [formData, normalFields, 0]);
-                    }
-                }
-
-                if (mapping.nextButtonSelector) {
-                    updateStatus('[' + pageName + '] Clicking Button...');
-                    await injectScriptWithRetry(tab.id, clickElement, [mapping.nextButtonSelector]);
-                } else {
-                    updateStatus('[' + pageName + '] No button to click. Moving to next step...');
-                }
-
             } catch (error) {
                 updateStatus('FATAL ERROR: ' + error.message, "red");
                 console.error(error);
@@ -862,296 +635,83 @@ async function runFullAutomation() {
     }
 });
 
-
-// =================================================================
-// PART 3: INJECTOR UTILITIES
-// =================================================================
-async function injectScriptWithRetry(tabId, func, args, maxRetries) {
-    if (!args) args = [];
-    if (!maxRetries) maxRetries = 5;
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-            return await injectScript(tabId, func, args);
-        } catch (err) {
-            const isNav = err.message.indexOf("Frame with ID 0 was removed") !== -1 || 
-                          err.message.indexOf("The tab was closed") !== -1;
-            if (isNav && attempt < maxRetries) {
-                await new Promise(function(r) { setTimeout(r, 2000); });
-            } else { 
-                throw err; 
+function injectScript(tabId, func, args = []) {
+    return new Promise((resolve, reject) => {
+        chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            func: func,
+            args: args,
+        }, (injectionResults) => {
+            if (chrome.runtime.lastError) {
+                return reject(new Error(chrome.runtime.lastError.message));
             }
-        }
-    }
-}
-
-function injectScript(tabId, func, args) {
-    if (!args) args = [];
-    return new Promise(function(resolve, reject) {
-        chrome.scripting.executeScript({ target: { tabId: tabId }, func: func, args: args }, function(res) {
-            if (chrome.runtime.lastError) return reject(new Error(chrome.runtime.lastError.message));
-            if (res && res[0] && res[0].result && res[0].result.error) return reject(new Error(res[0].result.error));
+            // Check the result of the injected script
+            if (injectionResults && injectionResults[0] && injectionResults[0].result) {
+                const result = injectionResults[0].result;
+                if (result.error) {
+                    return reject(new Error(result.error));
+                }
+            }
             resolve();
         });
     });
 }
 
+
+// PART 3: INJECTABLE FUNCTIONS (These run inside the LHDN page)
 // =================================================================
-// PART 4: BROWSER CONTEXT FUNCTIONS (UPDATED)
-// =================================================================
-
-// ✅ REPLACED: fillPageWithData (Strictly Sequential)
-function fillPageWithData(data, fieldMap, rowIndex) {
-    if (rowIndex === undefined) rowIndex = 0;
-    
-    const delay = function(ms) { 
-        return new Promise(function(res) { setTimeout(res, ms); }); 
-    };
-
-    const waitForPageUpdate = function() {
-        return new Promise(function(resolve) {
-            let updateDetected = false;
-            const observer = new MutationObserver(function(mutations) {
-                updateDetected = true;
-                console.log("📡 Page update detected!");
-            });
-            const mainContent = document.getElementById('MainContent') || document.body;
-            observer.observe(mainContent, {
-                attributes: true,
-                attributeFilter: ['disabled', 'class', 'style'],
-                subtree: true,
-                attributeOldValue: true
-            });
-            setTimeout(function() {
-                observer.disconnect();
-                resolve(updateDetected);
-            }, 5000);
-        });
-    };
-
-    const setFieldValue = function(selector, value, fieldKey) {
-        // SAFETY CHECK: If selector is undefined, stop.
-        if (!selector) {
-            console.warn('[Fill] ⚠️ Selector is missing for key: ' + fieldKey);
-            return false;
-        }
-
-        // STRATEGY A: ALL
-        if (selector.indexOf("ALL:") === 0) {
-            const cleanSelector = selector.replace("ALL:", "");
-            const allElements = document.querySelectorAll(cleanSelector);
-            if (allElements.length === 0) return false;
-            for (let i = 0; i < allElements.length; i++) {
-                const el = allElements[i];
-                if (!el.disabled && !el.readOnly) {
-                    el.value = value;
-                    el.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            }
-            return true;
-        }
-
-        // STRATEGY B: STANDARD FILLER
-        let el = document.getElementById(selector);
-        if (!el && selector.indexOf('MainContent_') === -1 && selector.indexOf('#') === -1) {
-            el = document.getElementById('MainContent_' + selector);
-        }
-        if (!el) {
-            let finalSelector = selector;
-            if (selector.indexOf('#') === -1 && selector.indexOf('[') === -1) {
-                finalSelector = '#' + selector;
-            }
-            try { el = document.querySelector(finalSelector); } catch(e) {}
-        }
-        
-        if (!el) {
-            console.warn('[Fill] Field not found: ' + selector);
-            return false;
-        }
-
-        if (el.disabled || el.readOnly) {
-            console.log('[Fill] Skipping Disabled Field: ' + selector);
-            return true; 
-        }
-
-        console.log('[Fill] Setting ' + el.id + ' to: ' + value);
-        
-        el.focus();
-        el.value = value;
-        
-        el.dispatchEvent(new Event('focus', { bubbles: true }));
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-        el.dispatchEvent(new Event('blur', { bubbles: true }));
-        
-        if (el.tagName === 'SELECT') {
-            el.dispatchEvent(new Event('mousedown', { bubbles: true }));
-            el.dispatchEvent(new Event('mouseup', { bubbles: true }));
-            el.dispatchEvent(new Event('click', { bubbles: true }));
-            if (el.onchange) el.onchange();
-        }
-        
-        if (typeof __doPostBack !== 'undefined') {
-            try {
-                const eventTarget = el.id || selector;
-                __doPostBack(eventTarget, '');
-            } catch(e) {}
-        }
-        
-        return true;
-    };
-
-    return new Promise(function(resolve) {
-        (async function() {
-            const keys = fieldMap.__fieldOrder || Object.keys(fieldMap);
-            let count = 0;
-            
-            console.log('📋 Processing fields in order:', keys);
-            
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
-                
-                // 🛑 SAFETY FIX: Skip if key is empty/undefined (Fixes the comma issue)
-                if (!key || key === '__fieldOrder') continue;
-                
-                const sel = fieldMap[key];
-                
-                // 🛑 SAFETY FIX: Skip if selector is missing (Fixes mismatch between Order and Fields)
-                if (!sel) {
-                    console.warn('⚠️ Field "' + key + '" is in fieldOrder but NOT in fields map. Skipping.');
-                    continue;
-                }
-
-                const jsonValue = data[key];
-
-                if (jsonValue === undefined || jsonValue === null || jsonValue === "") {
-                    continue;
-                }
-
-                const success = setFieldValue(sel, jsonValue, key);
-                
-                if (success) {
-                    // === SPECIAL DELAY LOGIC ===
-                    if (sel.indexOf("ddlKod") !== -1 || key === "Business_Activity_Code") {
-                        console.log("🔄 Activity Code detected. Waiting for AJAX update...");
-                        const updated = await waitForPageUpdate();
-                        
-                        if (updated) {
-                            console.log("✅ Page updated! Waiting 2s...");
-                            await delay(2000);
-                        } else {
-                            console.log("⚠️ No update detected, waiting 5s...");
-                            await delay(5000);
-                        }
-                        
-                        let retries = 0;
-                        while (retries < 20) {
-                            const dependentId = 'MainContent_RptSubs_ddlTeras_' + rowIndex;
-                            const teras = document.getElementById(dependentId);
-                            if (teras && !teras.disabled) {
-                                console.log("✅ Dependent fields enabled!");
-                                break;
-                            }
-                            await delay(250);
-                            retries++;
-                        }
-                    } 
-                    else if (sel.indexOf("ddlTeras") !== -1 || sel.indexOf("ddlStatus") !== -1 || sel.indexOf("ddlSub") !== -1) {
-                        console.log("⏳ Dependent field filled. Waiting 3s...");
-                        await delay(3000);
-                    }
-                    else {
-                        // await delay(700); 
-                    }
-                    count++;
-                }
-            }
-            resolve({ success: true, filled: count });
-        })();
-    });
-}
-function clickElement(selector) {
-    const el = document.querySelector(selector);
-    if (!el) {
-        console.error('[Page] Button not found: ' + selector);
-        return { error: 'Button ' + selector + ' not found.' };
-    }
-    console.log('[Page] Found ' + selector + '. Clicking...');
-    el.click();
-    return { success: true };
-}
-
-function triggerAspSave(tabId, selector) {
-    return new Promise(function(resolve, reject) {
-        chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            world: 'MAIN',
-            func: function(sel) {
-                const el = document.querySelector(sel);
-                if (!el) {
-                    console.error('[Main World] Save button not found: ' + sel);
-                    return { error: 'Save button not found' };
-                }
-                console.log('[Main World] Found button. Clicking...');
-                el.click(); 
-                return { success: true };
-            },
-            args: [selector],
-        }, function(res) {
-            if (chrome.runtime.lastError) {
-                reject(new Error(chrome.runtime.lastError.message));
-            } else {
-                resolve(res);
-            }
-        });
-    });
-}
 
 function waitForElementOnPage(selector, timeout) {
-    return new Promise(function(resolve) {
-        let finalSelector = selector;
-        if (selector.indexOf('ALL:') !== -1) finalSelector = selector.replace('ALL:', '');
-        
-        if (finalSelector.indexOf('#') === -1 && finalSelector.indexOf('[') === -1) {
-            finalSelector = '#' + finalSelector;
-        }
-
-        if (document.querySelector(finalSelector)) return resolve(true);
-        const int = setInterval(function() {
-            if (document.querySelector(finalSelector)) { 
-                clearInterval(int); 
-                resolve(true); 
+    console.log(`[LHDN Page] Waiting for element: ${selector}`);
+    return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+            if (document.querySelector(selector)) {
+                clearInterval(interval);
+                clearTimeout(timer);
+                console.log(`[LHDN Page] Found element: ${selector}`);
+                resolve(true);
             }
         }, 500);
-        setTimeout(function() { 
-            clearInterval(int); 
-            resolve({ error: 'Timeout: ' + finalSelector }); 
+
+        const timer = setTimeout(() => {
+            clearInterval(interval);
+            console.error(`[LHDN Page] TIMEOUT: Element '${selector}' not found.`);
+            // IMPORTANT: We don't reject here. We resolve with an error object.
+            // This is because the result needs to be JSON-serializable to pass back.
+            resolve({ error: `Element '${selector}' did not appear within ${timeout / 1000}s.` });
         }, timeout);
     });
 }
 
-function triggerAspSave(tabId, selector) {
-    return new Promise(function(resolve, reject) {
-        chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            world: 'MAIN',
-            func: function(sel) {
-                const el = document.querySelector(sel);
-                if (!el) {
-                    console.error('[Main World] Save button not found: ' + sel);
-                    return { error: 'Save button not found' };
-                }
-                console.log('[Main World] Found button. Clicking...');
-                el.click(); 
-                return { success: true };
-            },
-            args: [selector],
-        }, function(res) {
-            if (chrome.runtime.lastError) {
-                reject(new Error(chrome.runtime.lastError.message));
-            } else {
-                resolve(res);
-            }
-        });
-    });
+function clickElement(selector) {
+    console.log(`[LHDN Page] Attempting to click: ${selector}`);
+    const element = document.querySelector(selector);
+    if (element) {
+        element.click();
+        return { success: true };
+    } else {
+        return { error: `Button with selector '${selector}' not found.` };
+    }
+}
+
+function fillPageWithData(data, fieldMap) {
+    console.log(`[LHDN Page] Starting to fill ${Object.keys(fieldMap).length} fields...`);
+    const setFieldValue = (domId, value) => {
+        const el = document.getElementById(domId);
+        if (!el) {
+             console.warn(`[LHDN Page] Element with ID '${domId}' not found. Skipping.`);
+             return;
+        }
+        el.value = value;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+        el.dispatchEvent(new Event('blur', { bubbles: true }));
+    };
+
+    for (const [jsonKey, domId] of Object.entries(fieldMap)) {
+        const value = data[jsonKey];
+        if (value !== null && value !== undefined && value !== "") {
+             setFieldValue(domId, value);
+        }
+    }
+    return { success: true };
 }
