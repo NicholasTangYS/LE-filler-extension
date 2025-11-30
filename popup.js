@@ -58,12 +58,14 @@
     },
 
     MakSya_Top: {
+         shouldSkip: (data) => !data.c3Rows || data.c3Rows.length === 0,
         waitForElement: '#MainContent_btnHKO',
         nextButtonSelector: '#MainContent_btnHKO',
         fields: {}
     },
 
     MakOfc: {
+        shouldSkip: (data) => !data.c3Rows || data.c3Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c3Rows", 
         saveButtonSelector: '#ctl00_MainContent_RptPekongsi_ctl00_linkPekongsiSave',
@@ -109,6 +111,7 @@
     },
 
     MakSyer: {        
+        shouldSkip: (data) => !data.c4Rows || data.c4Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c4Rows", 
         saveButtonSelector: '#ctl00_MainContent_RptPekongsi_ctl00_linkPekongsiSave',
@@ -146,18 +149,21 @@
     },
 
     MakSya_Syer: {
+        shouldSkip: (data) => !data.c4Rows || data.c4Rows.length === 0,
         waitForElement: '#MainContent_btnHKP',
         nextButtonSelector: '#MainContent_btnHKP',
         fields: {}
     },
 
     MakSya_Pemunya: {
+        shouldSkip: (data) => !data.c5Rows || data.c5Rows.length === 0,
         waitForElement:'#MainContent_btnPemunya',
          nextButtonSelector: '#MainContent_btnPemunya',
         fields: {}
     },
 
     MakPemunya:{
+        shouldSkip: (data) => !data.c5Rows || data.c5Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c5Rows", 
         saveButtonSelector: '#ctl00_MainContent_RptPekongsi_ctl00_linkPekongsiSave',
@@ -427,12 +433,14 @@
     },
 
     MakSya_Tuntutan: {
+        shouldSkip: (data) => !data.Generated_Incentive_List || data.Generated_Incentive_List.length === 0,
         waitForElement:'#MainContent_btnTuntutanIn',
         nextButtonSelector: '#MainContent_btnTuntutanIn',
         fields: {}
     },
     
     Tuntutan:{
+        shouldSkip: (data) => !data.Generated_Incentive_List || data.Generated_Incentive_List.length === 0,
         waitForElement: '#MainContent_rptInsentif_txtJenisInsentif_0',
         repeaterKey: "Generated_Incentive_List", 
         saveButtonSelector: '#ctl00_MainContent_rptInsentif_ctl00_linkTuntutanSave',
@@ -675,15 +683,25 @@
 }
 
 const pageSequence = [
-    'MakSya_Final','MakTaxAgent',
+    'MakAsas_Trigger','MakAsas_Fill',
+    'MakSya_Top','MakOfc',
+    'MakSya_Syer','MakSyer',
+    'MakSya_Pemunya','MakPemunya',
+    'MakSya_Kewangan','Kewangan',
+    'MakSya_Fin',
+    'MakSya_Subsid_Fill','MakSya_Subsid_Click','MakSubsid',
+    'MakSya_Payment_Fill','MakSya_Payment_Click','MakPayment',
+    'MakSya_Tuntutan','Tuntutan',
+    'MakLain_Fill', 'MakLain_Click',
+    'MakLain_Reporting',
+    'MakLain_NonReporting_Part1',
+    'MakLain_NonReporting_Part2', 
+    'MakSya_Final', 'MakTaxAgent',
     'MakSubstantif',
     'Cukai'
+];
 
-]; 
 
-// =================================================================
-// PART 2: MAIN LOGIC
-// =================================================================
 document.addEventListener('DOMContentLoaded', function() {
     const statusDiv = document.getElementById('msg');
     const jsonInput = document.getElementById('jsonData');
@@ -704,25 +722,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Promise(function(r) { setTimeout(r, ms); }); 
     }
 
-async function runFullAutomation() {
+ async function runFullAutomation() {
         const jsonStr = jsonInput ? jsonInput.value : "";
         if (!jsonStr) return updateStatus("Error: Paste JSON first.", "red");
 
         let formData;
-        try { 
-            formData = JSON.parse(jsonStr); 
-        } catch (e) { 
-            return updateStatus("Error: Invalid JSON.", "red"); 
-        }
+        try { formData = JSON.parse(jsonStr); } 
+        catch (e) { return updateStatus("Error: Invalid JSON.", "red"); }
 
         // --- DATA TRANSFORMATION ---
         formData.Generated_Incentive_List = [];
         const addIncentiveRow = (code, amount) => {
             if (code && String(code).trim() !== "") {
-                formData.Generated_Incentive_List.push({
-                    "Incentive_Code": code,
-                    "Amount_Claimed": amount
-                });
+                formData.Generated_Incentive_List.push({ "Incentive_Code": code, "Amount_Claimed": amount });
             }
         };
         addIncentiveRow(formData.C12_Row1_Incentive_Code, formData.C12_Row1_Amount_Claimed);
@@ -738,10 +750,34 @@ async function runFullAutomation() {
             const pageName = pageSequence[i];
             const mapping = pageMappings[pageName];
 
+            // 1. STANDARD CONDITIONAL SKIP
             if (mapping.shouldSkip && mapping.shouldSkip(formData)) {
                 updateStatus('[' + pageName + '] Skipping (Condition met).');
                 continue; 
             }
+
+            // ============================================================
+            // 2. NEW: SMART SKIP BASED ON WAIT ELEMENT
+            // If the element we are waiting for corresponds to a JSON field,
+            // and that JSON field is EMPTY, we skip the whole page.
+            // ============================================================
+            if (mapping.waitForElement) {
+                // Find which JSON key matches this waitForElement ID
+                let waitKey = null;
+                for (const key in mapping.fields) {
+                    if (mapping.fields[key] === mapping.waitForElement) {
+                        waitKey = key;
+                        break;
+                    }
+                }
+
+                // If found, check if data exists
+                if (waitKey && (!formData[waitKey] || formData[waitKey] === "")) {
+                    updateStatus('[' + pageName + '] Skipping (Data for wait element is empty).');
+                    continue; // SKIP PAGE
+                }
+            }
+            // ============================================================
 
             if (i > 0) {
                 updateStatus('Waiting 3s for ' + pageName + '...');
@@ -763,53 +799,39 @@ async function runFullAutomation() {
                         for (let j = 0; j < items.length; j++) {
                             updateStatus('[' + pageName + '] Processing Item ' + (j + 1) + '/' + items.length + '...');
                             
-                            // ✅ CHANGED: Use fieldOrder if available, otherwise Object.keys
                             const dynamicFields = {};
                             const fieldKeys = mapping.fieldOrder || Object.keys(mapping.fields);
-                            
+                            dynamicFields.__fieldOrder = fieldKeys;
+
                             for (let k = 0; k < fieldKeys.length; k++) {
                                 const key = fieldKeys[k];
                                 const val = mapping.fields[key];
-                                
-                                if (val.indexOf("ALL:") === 0) {
+                                if (val.indexOf("ALL:") === 0 || val.indexOf("INDEXED:") === 0) {
                                     dynamicFields[key] = val;
-                                } 
-                                else if (val.indexOf('_0') !== -1) {
+                                } else if (val.indexOf('_0') !== -1) {
                                     dynamicFields[key] = val.replace(/_0(?=$|[^0-9])/, '_' + j);
-                                } 
-                                else {
+                                } else {
                                     dynamicFields[key] = val;
                                 }
                             }
 
-                            // ✅ ADDED: Pass the field order to the filler
-                            dynamicFields.__fieldOrder = fieldKeys;
-
-                            // 2. CALCULATE SAVE BUTTON ID (Strict: ctl00 -> ctl01)
                             const idxStr = j < 10 ? '0' + j : '' + j;
                             let dynamicSaveBtn = mapping.saveButtonSelector;
-                            
                             if (dynamicSaveBtn.indexOf("ctl00_link") !== -1) {
                                 dynamicSaveBtn = dynamicSaveBtn.replace("ctl00_link", 'ctl' + idxStr + '_link');
-                            }
-                            else {
-                                const lastIndex = dynamicSaveBtn.lastIndexOf("ctl00");
-                                if (lastIndex > 0) {
-                                    dynamicSaveBtn = dynamicSaveBtn.substring(0, lastIndex) + 
-                                                     'ctl' + idxStr + 
-                                                     dynamicSaveBtn.substring(lastIndex + 5);
+                            } else {
+                                const lastCtl = dynamicSaveBtn.lastIndexOf("ctl00");
+                                if (lastCtl !== -1) {
+                                    dynamicSaveBtn = dynamicSaveBtn.substring(0, lastCtl) + 'ctl' + idxStr + dynamicSaveBtn.substring(lastCtl + 5);
                                 }
                             }
 
-                            // A. Fill Form
                             await injectScriptWithRetry(tab.id, fillPageWithData, [items[j], dynamicFields, j]);
                             await sleep(500);
                             
-                            // B. Save (Exact ID Mode)
                             updateStatus('[' + pageName + '] Saving Item ' + (j+1) + '...');
-                            await triggerAspSave(tab.id, dynamicSaveBtn, 0); // Pass 0 because ID is exact
+                            await triggerAspSave(tab.id, dynamicSaveBtn, 0);
                             
-                            // C. Wait for Reload
                             updateStatus('[' + pageName + '] Waiting for server response...');
                             await sleep(5000); 
                         }
@@ -818,16 +840,10 @@ async function runFullAutomation() {
                     }
                 } 
                 // === NORMAL PAGE LOGIC ===
-
                 else {
                     if (Object.keys(mapping.fields).length > 0) {
                         const normalFields = mapping.fields;
-                        
-                        // ✅ ADD: Pass fieldOrder for non-repeater pages too
-                        if (mapping.fieldOrder) {
-                            normalFields.__fieldOrder = mapping.fieldOrder;
-                        }
-                        
+                        if (mapping.fieldOrder) normalFields.__fieldOrder = mapping.fieldOrder;
                         await injectScriptWithRetry(tab.id, fillPageWithData, [formData, normalFields, 0]);
                     }
                 }
@@ -848,7 +864,6 @@ async function runFullAutomation() {
         updateStatus("Automation Done!", "green");
     }
 });
-
 
 // =================================================================
 // PART 3: INJECTOR UTILITIES
@@ -877,17 +892,39 @@ function injectScript(tabId, func, args) {
     return new Promise(function(resolve, reject) {
         chrome.scripting.executeScript({ target: { tabId: tabId }, func: func, args: args }, function(res) {
             if (chrome.runtime.lastError) return reject(new Error(chrome.runtime.lastError.message));
-            if (res && res[0] && res[0].result && res[0].result.error) return reject(new Error(res[0].result.error));
             resolve();
         });
     });
 }
 
 // =================================================================
-// PART 4: BROWSER CONTEXT FUNCTIONS (UPDATED)
+// PART 4: BROWSER CONTEXT FUNCTIONS
 // =================================================================
+function waitForElementOnPage(selector, timeout) {
+    return new Promise(function(resolve) {
+        let finalSelector = selector;
+        // Clean ALL: prefix for waiting
+        if (selector.indexOf('ALL:') !== -1) finalSelector = selector.replace('ALL:', '');
+        
+        if (finalSelector.indexOf('#') === -1 && finalSelector.indexOf('[') === -1) {
+            finalSelector = '#' + finalSelector;
+        }
 
-// ✅ REPLACED: fillPageWithData (Strictly Sequential)
+        if (document.querySelector(finalSelector)) return resolve(true);
+        const int = setInterval(function() {
+            if (document.querySelector(finalSelector)) { 
+                clearInterval(int); 
+                resolve(true); 
+            }
+        }, 500);
+        setTimeout(function() { 
+            clearInterval(int); 
+            resolve({ error: 'Timeout: ' + finalSelector }); 
+        }, timeout);
+    });
+}
+
+// ULTIMATE FILLER: Strict Sequence + Dynamic Waiting
 function fillPageWithData(data, fieldMap, rowIndex) {
     if (rowIndex === undefined) rowIndex = 0;
     
@@ -895,6 +932,7 @@ function fillPageWithData(data, fieldMap, rowIndex) {
         return new Promise(function(res) { setTimeout(res, ms); }); 
     };
 
+    // Keep your specific observer logic
     const waitForPageUpdate = function() {
         return new Promise(function(resolve) {
             let updateDetected = false;
@@ -916,18 +954,16 @@ function fillPageWithData(data, fieldMap, rowIndex) {
         });
     };
 
-    const setFieldValue = function(selector, value, fieldKey) {
-        // SAFETY CHECK: If selector is undefined, stop.
-        if (!selector) {
-            console.warn('[Fill] ⚠️ Selector is missing for key: ' + fieldKey);
-            return false;
-        }
-
+    const setFieldValue = function(selector, value) {
         // STRATEGY A: ALL
         if (selector.indexOf("ALL:") === 0) {
             const cleanSelector = selector.replace("ALL:", "");
             const allElements = document.querySelectorAll(cleanSelector);
-            if (allElements.length === 0) return false;
+            if (allElements.length === 0) {
+                console.warn('[Fill] No elements found for ALL: ' + cleanSelector);
+                return false;
+            }
+            console.log('[Fill] BLASTING ' + allElements.length + ' elements with value: ' + value);
             for (let i = 0; i < allElements.length; i++) {
                 const el = allElements[i];
                 if (!el.disabled && !el.readOnly) {
@@ -940,6 +976,8 @@ function fillPageWithData(data, fieldMap, rowIndex) {
 
         // STRATEGY B: STANDARD FILLER
         let el = document.getElementById(selector);
+        
+        // Fallback IDs
         if (!el && selector.indexOf('MainContent_') === -1 && selector.indexOf('#') === -1) {
             el = document.getElementById('MainContent_' + selector);
         }
@@ -952,20 +990,22 @@ function fillPageWithData(data, fieldMap, rowIndex) {
         }
         
         if (!el) {
-            console.warn('[Fill] Field not found: ' + selector);
+            console.warn('Field not found: ' + selector);
             return false;
         }
 
+        // --- CONDITION HANDLER: Skip if disabled ---
         if (el.disabled || el.readOnly) {
             console.log('[Fill] Skipping Disabled Field: ' + selector);
             return true; 
         }
 
-        console.log('[Fill] Setting ' + el.id + ' to: ' + value);
+        console.log('Setting ' + el.id + ' to: ' + value);
         
         el.focus();
         el.value = value;
         
+        // Your specific event sequence
         el.dispatchEvent(new Event('focus', { bubbles: true }));
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
@@ -990,35 +1030,33 @@ function fillPageWithData(data, fieldMap, rowIndex) {
 
     return new Promise(function(resolve) {
         (async function() {
-            const keys = fieldMap.__fieldOrder || Object.keys(fieldMap);
-            let count = 0;
+            // 1. GET KEYS IN STRICT ORDER (Using the fieldOrder we passed)
+            // If __fieldOrder exists, use it. Otherwise use Object.keys (unreliable order)
+            let keys = fieldMap.__fieldOrder || Object.keys(fieldMap);
             
-            console.log('📋 Processing fields in order:', keys);
+            // Remove the helper key from the loop
+            keys = keys.filter(function(k) { return k !== '__fieldOrder'; });
+
+            let count = 0;
             
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i];
-                
-                // 🛑 SAFETY FIX: Skip if key is empty/undefined (Fixes the comma issue)
-                if (!key || key === '__fieldOrder') continue;
-                
                 const sel = fieldMap[key];
-                
-                // 🛑 SAFETY FIX: Skip if selector is missing (Fixes mismatch between Order and Fields)
-                if (!sel) {
-                    console.warn('⚠️ Field "' + key + '" is in fieldOrder but NOT in fields map. Skipping.');
-                    continue;
-                }
-
                 const jsonValue = data[key];
 
+                // Skip if data missing
                 if (jsonValue === undefined || jsonValue === null || jsonValue === "") {
                     continue;
                 }
 
-                const success = setFieldValue(sel, jsonValue, key);
+                console.log(`[Sequence ${i+1}/${keys.length}] Processing: ${key}`);
+
+                // 2. SET VALUE
+                const success = setFieldValue(sel, jsonValue);
                 
+                // 3. HANDLE DELAYS (Strictly after success)
                 if (success) {
-                    // === SPECIAL DELAY LOGIC ===
+                    // === YOUR SPECIAL DELAY LOGIC ===
                     if (sel.indexOf("ddlKod") !== -1 || key === "Business_Activity_Code") {
                         console.log("🔄 Activity Code detected. Waiting for AJAX update...");
                         const updated = await waitForPageUpdate();
@@ -1031,10 +1069,12 @@ function fillPageWithData(data, fieldMap, rowIndex) {
                             await delay(5000);
                         }
                         
+                        // Wait for dependent fields to unlock
                         let retries = 0;
                         while (retries < 20) {
                             const dependentId = 'MainContent_RptSubs_ddlTeras_' + rowIndex;
                             const teras = document.getElementById(dependentId);
+                            
                             if (teras && !teras.disabled) {
                                 console.log("✅ Dependent fields enabled!");
                                 break;
@@ -1057,6 +1097,7 @@ function fillPageWithData(data, fieldMap, rowIndex) {
         })();
     });
 }
+
 function clickElement(selector) {
     const el = document.querySelector(selector);
     if (!el) {
@@ -1066,55 +1107,6 @@ function clickElement(selector) {
     console.log('[Page] Found ' + selector + '. Clicking...');
     el.click();
     return { success: true };
-}
-
-function triggerAspSave(tabId, selector) {
-    return new Promise(function(resolve, reject) {
-        chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            world: 'MAIN',
-            func: function(sel) {
-                const el = document.querySelector(sel);
-                if (!el) {
-                    console.error('[Main World] Save button not found: ' + sel);
-                    return { error: 'Save button not found' };
-                }
-                console.log('[Main World] Found button. Clicking...');
-                el.click(); 
-                return { success: true };
-            },
-            args: [selector],
-        }, function(res) {
-            if (chrome.runtime.lastError) {
-                reject(new Error(chrome.runtime.lastError.message));
-            } else {
-                resolve(res);
-            }
-        });
-    });
-}
-
-function waitForElementOnPage(selector, timeout) {
-    return new Promise(function(resolve) {
-        let finalSelector = selector;
-        if (selector.indexOf('ALL:') !== -1) finalSelector = selector.replace('ALL:', '');
-        
-        if (finalSelector.indexOf('#') === -1 && finalSelector.indexOf('[') === -1) {
-            finalSelector = '#' + finalSelector;
-        }
-
-        if (document.querySelector(finalSelector)) return resolve(true);
-        const int = setInterval(function() {
-            if (document.querySelector(finalSelector)) { 
-                clearInterval(int); 
-                resolve(true); 
-            }
-        }, 500);
-        setTimeout(function() { 
-            clearInterval(int); 
-            resolve({ error: 'Timeout: ' + finalSelector }); 
-        }, timeout);
-    });
 }
 
 function triggerAspSave(tabId, selector) {
