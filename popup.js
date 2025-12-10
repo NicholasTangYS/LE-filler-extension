@@ -6,11 +6,9 @@
    // --- PAGE 1: SPLIT INTO TWO STEPS ---
 
     // STEP 1A: Fill the dropdowns that cause a Page Reload (PostBack)
-    MakAsas_Trigger: {
+    Basic_Info_P1: {
         waitForElement: '#MainContent_ddlPenyata', 
         nextButtonSelector: null, // Don't click Next yet!
-        
-        // Remove the comma at the start of fieldOrder if you had one!
         fieldOrder: [
             "Change_of_Accounting_Period_No",
             "FS_in_Foreign_Currency_Yes"
@@ -22,7 +20,7 @@
     },
 
     // STEP 1B: Fill the rest of the fields (After page reload)
-    MakAsas_Fill: {
+    Basic_Info_P2: {
         // Wait for a field that appears/stays after reload (e.g. Start Date)
         waitForElement: '#MainContent_txtTarikhMula', 
         
@@ -57,14 +55,14 @@
         }
     },
 
-    MakSya_Top: {
+    Officer_Info_P1: {
          shouldSkip: (data) => !data.c3Rows || data.c3Rows.length === 0,
         waitForElement: '#MainContent_btnHKO',
         nextButtonSelector: '#MainContent_btnHKO',
         fields: {}
     },
 
-    MakOfc: {
+     Officer_Info_P2: {
         shouldSkip: (data) => !data.c3Rows || data.c3Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c3Rows", 
@@ -110,7 +108,7 @@
         }
     },
 
-    MakSyer: {        
+   Shareholder_Info_P1: {        
         shouldSkip: (data) => !data.c4Rows || data.c4Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c4Rows", 
@@ -148,21 +146,21 @@
         }
     },
 
-    MakSya_Syer: {
+    Shareholder_Info_P2: {
         shouldSkip: (data) => !data.c4Rows || data.c4Rows.length === 0,
         waitForElement: '#MainContent_btnHKP',
         nextButtonSelector: '#MainContent_btnHKP',
         fields: {}
     },
 
-    MakSya_Pemunya: {
+    Beneficial_Owner_Info_P1: {
         shouldSkip: (data) => !data.c5Rows || data.c5Rows.length === 0,
         waitForElement:'#MainContent_btnPemunya',
          nextButtonSelector: '#MainContent_btnPemunya',
         fields: {}
     },
 
-    MakPemunya:{
+    Beneficial_Owner_Info_P2:{
         shouldSkip: (data) => !data.c5Rows || data.c5Rows.length === 0,
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c5Rows", 
@@ -208,13 +206,13 @@
         }
     },
 
-    MakSya_Kewangan: {
+    Financial_Info_P1: {
         waitForElement:'#MainContent_btnMakKewangan',
          nextButtonSelector: '#MainContent_btnMakKewangan',
         fields: {}
     },
 
-    Kewangan: {
+    Financial_Info_P2: {
         waitForElement: '#txtL1', 
         nextButtonSelector: '#MainContent_btnNext',
         fieldOrder: [
@@ -341,7 +339,7 @@
         }
     },
 
-     MakSya_Fin: {
+     LE_Info: {
         waitForElement:'#MainContent_ddlSyktKaitan',
          nextButtonSelector: null,
         fieldOrder: [
@@ -362,7 +360,7 @@
         }
     },
 
-     MakSya_Subsid_Fill: {
+     Subsidiary_P1: {
         nextButtonSelector: null,
         fieldOrder: ["C10_Has_Subsidiary_Outside_Labuan"],
         fields: {
@@ -370,13 +368,13 @@
         }
     },
 
-     MakSya_Subsid_Click: {
+      Subsidiary_P2: {
         shouldSkip: (data) => data.C10_Has_Subsidiary_Outside_Labuan !== '1',
         nextButtonSelector: '#btnSyktSubsidiari',
         fields: {}
     },
 
-     MakSubsid: {
+      Subsidiary_P3: {
         shouldSkip: (data) => data.C10_Has_Subsidiary_Outside_Labuan !== '1',
         waitForElement: '#MainContent_RptPekongsi_txtNama_0',
         repeaterKey: "c10Rows", 
@@ -396,7 +394,7 @@
         }
     },
 
-    MakSya_Payment_Fill: {
+    Payment_P1: {
         nextButtonSelector: null,
         fieldOrder: ["C11_Received_Payments_from_Malaysian_Resident"],
         fields: {
@@ -404,13 +402,13 @@
         }
     },
 
-    MakSya_Payment_Click: {
+    Payment_P2: {
         shouldSkip: (data) => data.C11_Received_Payments_from_Malaysian_Resident !== '1',
         nextButtonSelector: '#bntTerimaMastautin',
         fields: {}
     },
 
-    MakPayment: {
+    Payment_P3: {
         shouldSkip: (data) => data.C11_Received_Payments_from_Malaysian_Resident !== '1',
         waitForElement: '#MainContent_RptPekongsi_ddljenis_bayaran_0',
         repeaterKey: "c11Rows", 
@@ -432,14 +430,14 @@
         }
     },
 
-    MakSya_Tuntutan: {
+   Incentive_Claim_P1: {
         shouldSkip: (data) => !data.Generated_Incentive_List || data.Generated_Incentive_List.length === 0,
         waitForElement:'#MainContent_btnTuntutanIn',
         nextButtonSelector: '#MainContent_btnTuntutanIn',
         fields: {}
     },
     
-    Tuntutan:{
+    Incentive_Claim_P2:{
         shouldSkip: (data) => !data.Generated_Incentive_List || data.Generated_Incentive_List.length === 0,
         waitForElement: '#MainContent_rptInsentif_txtJenisInsentif_0',
         repeaterKey: "Generated_Incentive_List", 
@@ -455,7 +453,7 @@
         }
     },
 
-    MakLain_Fill: {
+    Other_Info_P1: {
         waitForElement: '#MainContent_ddlRcbcra',
         nextButtonSelector: null,
         fieldOrder: [
@@ -468,14 +466,14 @@
         }
     },
 
-    MakLain_Click: {
+   Reporting_Entity_P1: {
         shouldSkip: (data) => data.D1_Subject_to_CbCR !== '1',
         waitForElement: '#MainContent_ddlRcbcrb',
         nextButtonSelector: '#MainContent_btnEntiti', 
         fields: {}
     },
 
-   MakLain_Reporting: {
+   Reporting_Entity_P2: {
         shouldSkip: (data) => data.D1_Subject_as !== '1',
         waitForElement: '#MainContent_txtG5b_NamaMNE', 
         nextButtonSelector: '#MainContent_btnNext',
@@ -495,35 +493,7 @@
         }
     },
 
-    MakLain_NonReporting: {
-        shouldSkip: (data) => data.D1_Subject_as !== '2',
-        waitForElement: '#MainContent_txtG5b_NamaMNE', 
-        nextButtonSelector: '#MainContent_btnNext',
-        fieldOrder: [
-            "F1_Reporting_Entity_Name",
-            "F2_TIN",
-            "F3_Country_of_Residence",
-            "F4_Accounting_Period_From",
-            "F4_Accounting_Period_To",
-            "F5_MNE_Group_Name",
-            "F6_Status_of_Reporting_Entity",
-            "F7a_Ultimate_Holding_Entity_Name",
-            "F7b_Country_of_Residence_UHE"
-        ],
-        fields: {
-            "F1_Reporting_Entity_Name": "MainContent_txtG5b_NamaMNE",
-            "F2_TIN": "txtG5b_NoCukaiPelapor",
-            "F3_Country_of_Residence": "ddlNegPelapor",
-            "F4_Accounting_Period_From": "MainContent_txtG5b_Tempoh_Akaun_Mula",
-            "F4_Accounting_Period_To": "MainContent_txtG5b_Tempoh_Akaun_Tutup",
-            "F5_MNE_Group_Name": "MainContent_txtNamaPelapor",
-            "F6_Status_of_Reporting_Entity": "MainContent_ddlStatus",
-            "F7a_Ultimate_Holding_Entity_Name":"MainContent_txtG5b_NamaMuktamad",
-            "F7b_Country_of_Residence_UHE": "ddlNegMastautin"
-        }
-    },
-
-    MakLain_NonReporting_Part1: {
+    NonReporting_Entity_P1: {
         shouldSkip: (data) => data.D1_Subject_as !== '2',
         waitForElement: '#MainContent_txtG5b_NamaMNE', 
         nextButtonSelector: null,
@@ -547,7 +517,7 @@
         }
     },
 
-    MakLain_NonReporting_Part2: {
+    NonReporting_Entity_P2: {
         shouldSkip: (data) => data.D1_Subject_as !== '2',
         waitForElement: '#MainContent_txtG5b_NamaMuktamad', 
         nextButtonSelector: '#MainContent_btnNext',
@@ -562,7 +532,7 @@
     },
 
 
-    MakSya_Final: {
+    Registerd_And_Auditor_Address: {
     waitForElement: '#MainContent_ddlIntKew', 
     nextButtonSelector: null,
     fieldOrder: [
@@ -613,7 +583,7 @@
 },
 
     // 3. Tax Agent (The Disabled Field Page)
-    MakTaxAgent: {
+    TaxAgent_Info: {
         // LOGIC: Skip this whole page if the declarant is a Director (Designation "2")
         // Adjust the logic if "2" means something else, but based on your request:
         shouldSkip: (data) => data.Declarant_Designation === '2',
@@ -631,7 +601,7 @@
     },
 
     // Added this back because it was missing
-    MakSubstantif: {
+    Substantive_Info: {
         // This ID triggers the 2-second delay in the filler function
         waitForElement: '#MainContent_RptSubs_ddlKod_0', 
 
@@ -674,7 +644,7 @@
     },
 
 
-    Cukai: {
+    Tax_Payable: {
         nextButtonSelector: '#MainContent_btnSave',
         fields: {
             "B5_Zakat_Paid": "MainContent_txtRebat"
@@ -683,32 +653,84 @@
 }
 
 const pageSequence = [
-    'MakAsas_Trigger','MakAsas_Fill',
-    'MakSya_Top','MakOfc',
-    'MakSya_Syer','MakSyer',
-    'MakSya_Pemunya','MakPemunya',
-    'MakSya_Kewangan','Kewangan',
-    'MakSya_Fin',
-    'MakSya_Subsid_Fill','MakSya_Subsid_Click','MakSubsid',
-    'MakSya_Payment_Fill','MakSya_Payment_Click','MakPayment',
-    'MakSya_Tuntutan','Tuntutan',
-    'MakLain_Fill', 'MakLain_Click',
-    'MakLain_Reporting',
-    'MakLain_NonReporting_Part1',
-    'MakLain_NonReporting_Part2', 
-    'MakSya_Final', 'MakTaxAgent',
-    'MakSubstantif',
-    'Cukai'
+
+    'Basic_Info_P1','Basic_Info_P2',
+    'Officer_Info_P1','Officer_Info_P2',       
+    'Shareholder_Info_P2','Shareholder_Info_P1', 
+    'Beneficial_Owner_Info_P1','Beneficial_Owner_Info_P2',
+    'Financial_Info_P1','Financial_Info_P2',
+    'LE_Info',
+    'Subsidiary_P1','Subsidiary_P2','Subsidiary_P3',      
+    'Payment_P1','Payment_P2','Payment_P3',
+    'Incentive_Claim_P1','Incentive_Claim_P2',    
+    'Other_Info_P1',         
+    'Reporting_Entity_P1','Reporting_Entity_P2',   
+    'NonReporting_Entity_P1','NonReporting_Entity_P2',
+    'Registerd_And_Auditor_Address','TaxAgent_Info',
+    'Substantive_Info',
+    'Tax_Payable'
 ];
 
 
 document.addEventListener('DOMContentLoaded', function() {
     const statusDiv = document.getElementById('msg');
-    const jsonInput = document.getElementById('jsonData');
+    const jsonInput = document.getElementById('jsonData'); 
     const startButton = document.getElementById('startBtn');
+    const startStepSelect = document.getElementById('startStep');
 
+    // ============================================================
+    // 1. POPULATE DROPDOWN (Create options first)
+    // ============================================================
+    if (startStepSelect) {
+        pageSequence.forEach((step, index) => {
+            const option = document.createElement('option');
+            option.value = step;
+            option.text = `${index + 1}. ${step}`;
+            startStepSelect.appendChild(option);
+        });
+    }
+
+    // ============================================================
+    // 2. STORAGE RESTORE (JSON & Last Page)
+    // ============================================================
+    // We load 'savedAutomationJson' AND 'lastSavedStep' together
+    chrome.storage.local.get(['savedAutomationJson', 'lastSavedStep'], function(result) {
+        
+        // A. Restore JSON (Fixes the empty box issue)
+        if (result.savedAutomationJson && jsonInput) {
+            jsonInput.value = result.savedAutomationJson;
+            console.log("JSON restored from storage.");
+        }
+
+        // B. Restore Dropdown Selection
+        if (result.lastSavedStep && startStepSelect) {
+            startStepSelect.value = result.lastSavedStep;
+            // Visual confirmation
+            if (statusDiv && result.lastSavedStep) {
+                statusDiv.textContent = "Resumed from last saved step: " + result.lastSavedStep;
+                statusDiv.style.color = "blue";
+            }
+        }
+    });
+
+    // ============================================================
+    // 3. STORAGE SAVE LISTENER (Critical for JSON persistence)
+    // ============================================================
+    // This watches for any typing or pasting in the text box
+    if (jsonInput) {
+        jsonInput.addEventListener('input', function() {
+            const currentData = jsonInput.value;
+            chrome.storage.local.set({ 'savedAutomationJson': currentData }, function() {
+                console.log("JSON saved to storage");
+            });
+        });
+    }
+
+    // Attach Click Listener
     if(startButton) startButton.addEventListener('click', runFullAutomation);
 
+
+    // ... Helper functions (updateStatus, sleep) go here ... 
     function updateStatus(message, color) {
         if (!color) color = "black";
         if(statusDiv) {
@@ -722,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Promise(function(r) { setTimeout(r, ms); }); 
     }
 
- async function runFullAutomation() {
+async function runFullAutomation() {
         const jsonStr = jsonInput ? jsonInput.value : "";
         if (!jsonStr) return updateStatus("Error: Paste JSON first.", "red");
 
@@ -730,76 +752,87 @@ document.addEventListener('DOMContentLoaded', function() {
         try { formData = JSON.parse(jsonStr); } 
         catch (e) { return updateStatus("Error: Invalid JSON.", "red"); }
 
-        // --- DATA TRANSFORMATION ---
+        // --- DATA TRANSFORMATION (Keep your existing code here) ---
         formData.Generated_Incentive_List = [];
         const addIncentiveRow = (code, amount) => {
             if (code && String(code).trim() !== "") {
                 formData.Generated_Incentive_List.push({ "Incentive_Code": code, "Amount_Claimed": amount });
             }
         };
-        addIncentiveRow(formData.C12_Row1_Incentive_Code, formData.C12_Row1_Amount_Claimed);
-        addIncentiveRow(formData.C12_Row2_Incentive_Code, formData.C12_Row2_Amount_Claimed);
-        addIncentiveRow(formData.C12_Row3_Incentive_Code, formData.C12_Row3_Amount_Claimed);
+        if(formData.C12_Row1_Incentive_Code) addIncentiveRow(formData.C12_Row1_Incentive_Code, formData.C12_Row1_Amount_Claimed);
+        if(formData.C12_Row2_Incentive_Code) addIncentiveRow(formData.C12_Row2_Incentive_Code, formData.C12_Row2_Amount_Claimed);
+        if(formData.C12_Row3_Incentive_Code) addIncentiveRow(formData.C12_Row3_Incentive_Code, formData.C12_Row3_Amount_Claimed);
         // ---------------------------
 
-        updateStatus("Starting...", "blue");
+        // 1. DETERMINE START INDEX
+        const selectedStepName = startStepSelect ? startStepSelect.value : pageSequence[0];
+        let startIndex = pageSequence.indexOf(selectedStepName);
+        if (startIndex === -1) startIndex = 0;
+
+        updateStatus(`Starting Automation from: ${selectedStepName} (Step ${startIndex + 1})...`, "blue");
+
+        // 2. LOCK UI
+        if (startStepSelect) startStepSelect.disabled = true;
+        if (startButton) startButton.disabled = true;
+
         const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
         const tab = tabs[0];
 
-        for (let i = 0; i < pageSequence.length; i++) {
-            const pageName = pageSequence[i];
-            const mapping = pageMappings[pageName];
+        try {
+            for (let i = startIndex; i < pageSequence.length; i++) {
+                const pageName = pageSequence[i];
+                const mapping = pageMappings[pageName];
 
-            // 1. STANDARD CONDITIONAL SKIP
-            if (mapping.shouldSkip && mapping.shouldSkip(formData)) {
-                updateStatus('[' + pageName + '] Skipping (Condition met).');
-                continue; 
-            }
+                // ============================================================
+                // UPDATE UI & SAVE PROGRESS TO STORAGE
+                // ============================================================
+                if (startStepSelect) startStepSelect.value = pageName;
+                
+                // SAVE TO STORAGE: If user closes popup now, this remembers where we were
+                chrome.storage.local.set({ 'lastSavedStep': pageName });
+                // ============================================================
 
-            // ============================================================
-            // 2. NEW: SMART SKIP BASED ON WAIT ELEMENT
-            // If the element we are waiting for corresponds to a JSON field,
-            // and that JSON field is EMPTY, we skip the whole page.
-            // ============================================================
-            if (mapping.waitForElement) {
-                // Find which JSON key matches this waitForElement ID
-                let waitKey = null;
-                for (const key in mapping.fields) {
-                    if (mapping.fields[key] === mapping.waitForElement) {
-                        waitKey = key;
-                        break;
+                // Check Condition Skip
+                if (mapping.shouldSkip && mapping.shouldSkip(formData)) {
+                    updateStatus('[' + pageName + '] Skipping (Condition met).');
+                    continue; 
+                }
+
+                // Check Wait Element Skip
+                if (mapping.waitForElement) {
+                    let waitKey = null;
+                    for (const key in mapping.fields) {
+                        if (mapping.fields[key] === mapping.waitForElement) {
+                            waitKey = key;
+                            break;
+                        }
+                    }
+                    if (waitKey && (!formData[waitKey] || formData[waitKey] === "")) {
+                        updateStatus('[' + pageName + '] Skipping (Data for wait element is empty).');
+                        continue; 
                     }
                 }
 
-                // If found, check if data exists
-                if (waitKey && (!formData[waitKey] || formData[waitKey] === "")) {
-                    updateStatus('[' + pageName + '] Skipping (Data for wait element is empty).');
-                    continue; // SKIP PAGE
+                if (i > startIndex) {
+                    updateStatus('Waiting 3s for ' + pageName + '...');
+                    await sleep(3000);
                 }
-            }
-            // ============================================================
 
-            if (i > 0) {
-                updateStatus('Waiting 3s for ' + pageName + '...');
-                await sleep(3000);
-            }
-
-            try {
+                // ... (Keep existing injection/repeater logic here) ...
                 if (mapping.waitForElement) {
                     await injectScriptWithRetry(tab.id, waitForElementOnPage, [mapping.waitForElement, 15000]);
                 }
 
-                // === REPEATER LOGIC ===
                 if (mapping.repeaterKey) {
-                    const items = formData[mapping.repeaterKey] || [];
-                    
-                    if (items.length > 0 && mapping.saveButtonSelector) {
-                        updateStatus('[' + pageName + '] Found ' + items.length + ' items. Starting Loop...');
-                        
+                    // ... (Your existing repeater logic) ...
+                    // Shortened for brevity, paste your actual repeater code here
+                     const items = formData[mapping.repeaterKey] || [];
+                     if (items.length > 0 && mapping.saveButtonSelector) {
                         for (let j = 0; j < items.length; j++) {
-                            updateStatus('[' + pageName + '] Processing Item ' + (j + 1) + '/' + items.length + '...');
-                            
-                            const dynamicFields = {};
+                            // ... repeater loop logic ...
+                            // NOTE: You can't easily save sub-step (repeater index) without complex logic.
+                            // Saving the Page Name is usually enough.
+                             const dynamicFields = {};
                             const fieldKeys = mapping.fieldOrder || Object.keys(mapping.fields);
                             dynamicFields.__fieldOrder = fieldKeys;
 
@@ -814,7 +847,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     dynamicFields[key] = val;
                                 }
                             }
-
                             const idxStr = j < 10 ? '0' + j : '' + j;
                             let dynamicSaveBtn = mapping.saveButtonSelector;
                             if (dynamicSaveBtn.indexOf("ctl00_link") !== -1) {
@@ -825,22 +857,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                     dynamicSaveBtn = dynamicSaveBtn.substring(0, lastCtl) + 'ctl' + idxStr + dynamicSaveBtn.substring(lastCtl + 5);
                                 }
                             }
-
                             await injectScriptWithRetry(tab.id, fillPageWithData, [items[j], dynamicFields, j]);
                             await sleep(500);
-                            
-                            updateStatus('[' + pageName + '] Saving Item ' + (j+1) + '...');
                             await triggerAspSave(tab.id, dynamicSaveBtn, 0);
-                            
-                            updateStatus('[' + pageName + '] Waiting for server response...');
                             await sleep(5000); 
                         }
-                    } else if (items.length > 0) {
+                     } else if (items.length > 0) {
                         await injectScriptWithRetry(tab.id, fillPageWithData, [items[0], mapping.fields, 0]);
-                    }
-                } 
-                // === NORMAL PAGE LOGIC ===
-                else {
+                     }
+                } else {
+                    // Normal Logic
                     if (Object.keys(mapping.fields).length > 0) {
                         const normalFields = mapping.fields;
                         if (mapping.fieldOrder) normalFields.__fieldOrder = mapping.fieldOrder;
@@ -851,17 +877,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (mapping.nextButtonSelector) {
                     updateStatus('[' + pageName + '] Clicking Button...');
                     await injectScriptWithRetry(tab.id, clickElement, [mapping.nextButtonSelector]);
-                } else {
-                    updateStatus('[' + pageName + '] No button to click. Moving to next step...');
                 }
-
-            } catch (error) {
-                updateStatus('FATAL ERROR: ' + error.message, "red");
-                console.error(error);
-                return;
             }
+            
+            // ============================================================
+            // FINISHED: CLEAR SAVED STEP (So next time it starts from 1)
+            // ============================================================
+            updateStatus("Automation Done!", "green");
+            chrome.storage.local.remove('lastSavedStep');
+            if (startStepSelect) startStepSelect.selectedIndex = 0;
+
+        } catch (error) {
+            updateStatus('FATAL ERROR: ' + error.message, "red");
+            console.error(error);
+        } finally {
+            if (startStepSelect) startStepSelect.disabled = false;
+            if (startButton) startButton.disabled = false;
         }
-        updateStatus("Automation Done!", "green");
     }
 });
 

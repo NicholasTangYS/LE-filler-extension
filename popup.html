@@ -1,22 +1,268 @@
-<!-- popup.html -->
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8"> 
     <title>LHDN Automation</title>
     <style>
-        body { width: 350px; font-family: sans-serif; padding: 15px; }
-        textarea { width: 100%; height: 250px; margin-bottom: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; font-size: 16px; background: #dc3545; color: white; border: none; cursor: pointer; }
-        button:hover { opacity: 0.9; }
-        #msg { margin-top: 10px; font-size: 14px; font-weight: bold; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 380px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+            background: #3d4b5e;
+            color: #e8eaed;
+        }
+
+        .container {
+            background: #3d4b5e;
+            min-height: 100vh;
+        }
+
+        /* HEADER STYLES */
+        .header {
+            background: linear-gradient(135deg, #41436A 0%, #984963 100%);
+            padding: 24px 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .logo-box {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 400;
+            margin-top: 4px;
+        }
+
+        /* CONTENT STYLES */
+        .content { padding: 20px; }
+
+        .input-group { margin-bottom: 20px; }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #b8bcc4;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-label span { margin-right: 6px; font-size: 14px; }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            padding: 12px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            border: 1px solid #5a6779;
+            border-radius: 6px;
+            resize: vertical;
+            transition: all 0.2s ease;
+            background: #2c3544;
+            color: #e8eaed;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #ff4d6d;
+            background: #232a36;
+            box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #7a8596;
+        }
+
+        /* CUSTOM DROPDOWN */
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 13px;
+            border: 1px solid #5a6779;
+            border-radius: 6px;
+            background: #2c3544;
+            color: #e8eaed;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        
+        select:focus { 
+            border-color: #ff4d6d;
+            box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.2);
+        }
+
+        select:hover {
+            background: #333d4e;
+            border-color: #6d7a8f;
+        }
+
+        /* BUTTON STYLES */
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff668a 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #ff668a 0%, #ff7fa0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 77, 109, 0.4);
+        }
+
+        button:active { 
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #4a5566;
+            color: #7a8596;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* STATUS MESSAGE */
+        #msg {
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: 1px solid #5a6779;
+            background: #2c3544;
+            color: #b8bcc4;
+            line-height: 1.5;
+        }
+
+        #msg:empty {
+            display: none;
+        }
+
+        /* Success state */
+        #msg.success {
+            background: rgba(102, 187, 106, 0.15);
+            border-color: #66bb6a;
+            color: #81c784;
+        }
+
+        /* Error state */
+        #msg.error {
+            background: rgba(255, 77, 109, 0.15);
+            border-color: #ff4d6d;
+            color: #ff7fa0;
+        }
+
+        /* Info state */
+        #msg.info {
+            background: rgba(254, 183, 119, 0.15);
+            border-color: #feb777;
+            color: #ffc799;
+        }
+
+        /* Scrollbar styling for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2c3544;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #5a6779;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6d7a8f;
+        }
     </style>
 </head>
 <body>
-    <h3>LHDN Multi-Page Automation</h3>
-    <textarea id="jsonData" placeholder='Paste your complete JSON data here...'></textarea>
-    <button id="startBtn">Start Full Automation</button>
-    <div id="msg"></div>
-    <!-- REMOVED type="module" -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title-row">
+                <div class="logo-box">⚡</div>
+                <h3>LHDN Automation</h3>
+            </div>
+            <p>Fill forms automatically with ease</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- JSON Input -->
+            <div class="input-group">
+                <label class="input-label" for="jsonData">
+                    <span>📋</span> JSON Data
+                </label>
+                <textarea id="jsonData" placeholder='{ "field": "value", ... }'></textarea>
+            </div>
+
+            <!-- Start Step Dropdown -->
+            <div class="input-group">
+                <label class="input-label" for="startStep">
+                    <span>🎯</span> Start From Step
+                </label>
+                <select id="startStep"></select>
+            </div>
+
+            <!-- Action Button -->
+            <button id="startBtn">
+                <span>▶</span> Start Automation
+            </button>
+            
+            <!-- Status Message -->
+            <div id="msg"></div>
+        </div>
+    </div>
+    
     <script src="popup.js"></script>
 </body>
 </html>

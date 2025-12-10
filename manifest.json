@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "LHDN Direct Filler",
-  "version": "2.0",
-  "description": "Fills the LHDN form directly in the current tab.",
+  "name": "LHDN Automation",
+  "version": "1.0",
+  "description": "Automate LHDN forms",
   "permissions": [
     "activeTab",
-    "scripting" 
+    "scripting",
+    "storage"
   ],
   "action": {
     "default_popup": "popup.html"
