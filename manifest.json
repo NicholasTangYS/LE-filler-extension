@@ -6,9 +6,17 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "storage"
+    "storage",
+    "sidePanel",
+    "notifications"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
-    "default_popup": "popup.html"
+    "default_title": "Open LHDN Automation"
+  },
+  "side_panel": {
+    "default_path": "popup.html"
   }
 }

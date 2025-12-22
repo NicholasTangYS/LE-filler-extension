@@ -1,240 +1,289 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LHDN Automation</title>
+    <!-- League Spartan Font -->
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #64369F;
+            --primary-light: #8e58c7;
+            --primary-dark: #4b237e;
+            --bg: #FFFFFF;
+            --surface: #F8F9FB;
+            --surface-hover: #F0F2F5;
+            --text-main: #2E2637;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --success: #10B981;
+            --error: #EF4444;
+            --warning: #F59E0B;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
 
         body {
             width: 380px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
-            background: #3d4b5e;
-            color: #e8eaed;
+            margin: 0;
+            padding: 0;
+            font-family: 'League Spartan', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
         }
 
-        .container {
-            background: #3d4b5e;
-            min-height: 100vh;
-        }
-
-        /* HEADER STYLES */
+        /* HEADER */
         .header {
-            background: linear-gradient(135deg, #41436A 0%, #984963 100%);
+            background: linear-gradient(135deg, #64369F 0%, #8A57C2 100%);
             padding: 24px 20px;
             color: white;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 12px rgba(100, 54, 159, 0.2);
+            margin-bottom: 20px;
         }
 
-        .header-title-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 5px;
-        }
-
-        .logo-box {
-            width: 32px;
-            height: 32px;
+        .header-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: inline-block;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            font-size: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            width: 48px;
+            height: 48px;
+            line-height: 48px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
         }
 
-        .header h3 {
+        .header h1 {
+            margin: 0;
             font-size: 20px;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.5px;
         }
 
         .header p {
-            font-size: 12px;
+            margin: 4px 0 0;
+            font-size: 13px;
             opacity: 0.9;
-            font-weight: 400;
-            margin-top: 4px;
+            font-weight: 300;
         }
 
-        /* CONTENT STYLES */
-        .content { padding: 20px; }
+        /* MAIN CONTENT */
+        .content {
+            padding: 0 20px 20px;
+        }
 
-        .input-group { margin-bottom: 20px; }
+        /* INPUT GROUPS */
+        .input-group {
+            margin-bottom: 20px;
+        }
 
         .input-label {
             display: flex;
             align-items: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
-            color: #b8bcc4;
+            color: var(--text-main);
             margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .input-label span { margin-right: 6px; font-size: 14px; }
-
-        textarea {
-            width: 100%;
-            height: 180px;
-            padding: 12px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 12px;
-            border: 1px solid #5a6779;
-            border-radius: 6px;
-            resize: vertical;
-            transition: all 0.2s ease;
-            background: #2c3544;
-            color: #e8eaed;
+        .input-label span {
+            margin-right: 6px;
+            font-size: 15px;
+            color: var(--primary);
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: #ff4d6d;
-            background: #232a36;
-            box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.2);
-        }
-
-        textarea::placeholder {
-            color: #7a8596;
-        }
-
-        /* CUSTOM DROPDOWN */
+        textarea,
         select {
             width: 100%;
+            background: var(--surface);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 12px;
+            font-family: 'League Spartan', sans-serif;
             font-size: 13px;
-            border: 1px solid #5a6779;
-            border-radius: 6px;
-            background: #2c3544;
-            color: #e8eaed;
-            cursor: pointer;
             outline: none;
             transition: all 0.2s ease;
         }
-        
-        select:focus { 
-            border-color: #ff4d6d;
-            box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.2);
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
         }
 
-        select:hover {
-            background: #333d4e;
-            border-color: #6d7a8f;
+        textarea:focus,
+        select:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(100, 54, 159, 0.1);
         }
 
-        /* BUTTON STYLES */
+        /* BUTTONS */
         button {
             width: 100%;
-            padding: 15px;
-            font-size: 14px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #ff4d6d 0%, #ff668a 100%);
-            color: white;
+            padding: 14px;
             border: none;
-            border-radius: 6px;
+            border-radius: 12px;
+            font-family: 'League Spartan', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        button:hover {
-            background: linear-gradient(135deg, #ff668a 0%, #ff7fa0 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 77, 109, 0.4);
+        #startBtn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(100, 54, 159, 0.3);
         }
 
-        button:active { 
-            transform: translateY(0);
+        #startBtn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(100, 54, 159, 0.4);
         }
 
-        button:disabled {
-            background: #4a5566;
-            color: #7a8596;
+        #startBtn:disabled {
+            background: #E5E7EB;
+            color: #9CA3AF;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
 
+        #stopBtn {
+            background: #FFF1F2;
+            color: var(--error);
+            border: 1px solid #FECDD3;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #stopBtn:hover {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+
         /* STATUS MESSAGE */
         #msg {
-            margin-top: 15px;
+            margin-top: 16px;
             padding: 12px;
-            font-size: 12px;
-            border-radius: 6px;
-            font-weight: 500;
-            border: 1px solid #5a6779;
-            background: #2c3544;
-            color: #b8bcc4;
+            border-radius: 10px;
+            font-size: 13px;
             line-height: 1.5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
         }
 
         #msg:empty {
             display: none;
         }
 
-        /* Success state */
-        #msg.success {
-            background: rgba(102, 187, 106, 0.15);
-            border-color: #66bb6a;
-            color: #81c784;
+        /* PROGRESS CONTAINER */
+        .progress-container {
+            margin-top: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        /* Error state */
-        #msg.error {
-            background: rgba(255, 77, 109, 0.15);
-            border-color: #ff4d6d;
-            color: #ff7fa0;
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
-        /* Info state */
-        #msg.info {
-            background: rgba(254, 183, 119, 0.15);
-            border-color: #feb777;
-            color: #ffc799;
+        .progress-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
 
-        /* Scrollbar styling for dark theme */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .progress-percent {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
         }
 
-        ::-webkit-scrollbar-track {
-            background: #2c3544;
+        .progress-bar-bg {
+            height: 8px;
+            background: var(--surface);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #5a6779;
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, #9D75D6 100%);
+            width: 0%;
+            transition: width 0.4s ease;
             border-radius: 4px;
         }
 
+        .progress-stats {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px;
+        }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: #6d7a8f;
+            background: #9CA3AF;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div class="header-title-row">
-                <div class="logo-box">⚡</div>
-                <h3>LHDN Automation</h3>
-            </div>
-            <p>Fill forms automatically with ease</p>
+            <div class="header-icon">⚡</div>
+            <h1>LHDN Automation</h1>
+            <p>Your Tax Filing Assistant</p>
         </div>
-        
+
         <!-- Content -->
         <div class="content">
             <!-- JSON Input -->
@@ -254,15 +303,85 @@
             </div>
 
             <!-- Action Button -->
-            <button id="startBtn">
-                <span>▶</span> Start Automation
-            </button>
-            
+            <button id="actionBtn"
+                style="width: 100%; padding: 10px; font-weight: bold; cursor: pointer; border: none; border-radius: 4px; background-color: #64369F; color: white;">▶
+                Start Automation</button>
             <!-- Status Message -->
             <div id="msg"></div>
+
+            <!-- Progress UI -->
+            <div id="progressContainer" class="progress-container" style="display: none;">
+                <div class="progress-header">
+                    <span class="progress-title">Progress</span>
+                    <span id="progressText" class="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progressBarFill" class="progress-bar-fill"></div>
+                </div>
+                <div class="progress-stats" id="stepCounter">Step 0 / 0</div>
+
+                <!-- Checklist Container -->
+                <div id="checklistContainer" class="checklist-container"></div>
+            </div>
         </div>
     </div>
-    
-    <script src="popup.js"></script>
+
+    <style>
+        /* Checklist Styles */
+        .checklist-container {
+            margin-top: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item.pending {
+            background: #F9FAFB;
+            color: #9CA3AF;
+        }
+
+        .checklist-item.processing {
+            background: #FFF7ED;
+            color: #C2410C;
+            border-left: 3px solid #F97316;
+        }
+
+        .checklist-item.success {
+            background: #ECFDF5;
+            color: #047857;
+        }
+
+        .checklist-item.failed {
+            background: #FEF2F2;
+            color: #B91C1C;
+        }
+
+        .checklist-item.skipped {
+            background: #F3F4F6;
+            color: #6B7280;
+            text-decoration: line-through;
+        }
+
+        .checklist-icon {
+            margin-right: 8px;
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+
+    <script src="popup2.js"></script>
 </body>
+
 </html>
