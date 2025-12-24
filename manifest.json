@@ -3,6 +3,7 @@
   "name": "LHDN Automation",
   "version": "1.0",
   "description": "Automate LHDN forms",
+  "host_permissions": [],
   "permissions": [
     "activeTab",
     "scripting",
