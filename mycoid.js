@@ -90,28 +90,29 @@ const SSM_MAPPINGS = {
             "Director_NRIC": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_87a278a7-4eff-45a3-be6b-9c37b26ff3ee",
             "Director_Name": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_31929850-b119-4a44-8e34-87d87e4f5992",
             "Director_DOB": "#ctl00_ContentPlaceHolder1_FormEngine1_ctl12_txtDate",
-            "Director_Nationality": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_66723223-1087-4340-9750-6a05e24c29df_ddlGroup",
+            "Director_Nationality": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_8a7bbf89-cba5-4789-88aa-7fc66e4ea0be_ddlGroup",
             "Director_Gender": "RADIO:ctl00_ContentPlaceHolder1_FormEngine1_rbaa9fc419-8743-40f7-8104-a5e8ccd495e2",
-            "Director_Race": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_ec6fc49e-cc18-472d-83b5-79469176378e_ddlGroup",
-            "Director_Address_Line1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_86316498-5c4e-4f0f-8c68-ddaf0cc17f8a",
-            "Director_Address_Line2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_a615f8cf-e1cf-4a37-9755-e5da08d0e74e",
-            "Director_Address_Line3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0e5b0214-7221-4384-93f4-00d3c40f06f5",
-            "Director_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c940b933-255d-4f1a-b62e-50a16c354728_ddlGroup",
-            "Director_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_43b81177-33e9-4e60-8438-e6d877f0d01d_ddlGroup",
-            "Director_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_f3775431-be3d-4223-bedd-094192b152d1_ddlGroup",
-            "Director_Postcode": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_98936665-2a29-450f-a78c-0fc753086eb0_ddlGroup",
+            "Director_Race": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c06cf816-00f1-4a6e-9ac9-38c06a031240_ddlGroup",
+            "Director_Address_Line1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_86316498-8040-41d2-805b-9b5dbc797851",
+            "Director_Address_Line2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_a615f8cf-f38e-4b94-82f7-16fac7345931",
+            "Director_Address_Line3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0e5b0214-b20b-4df0-8e6f-4e060f0942b4",
+            "Director_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_f11c1039-55d2-4346-a42f-995257e0d579_ddlGroup",
+            "Director_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_788c22e1-dd3b-4de6-aadb-5f92f387a664_ddlGroup",
+            "Director_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0641aa3a-e5b2-48bb-8a75-f8037a784c4e_ddlGroup",
+            "Director_Postcode": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_a39c630a-a6ef-4a2d-aa47-a8909686fa95_ddlGroup",
             "Director_Email": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_1615903f-84de-4029-85a9-a4d19cc03681",
             "Director_Mobile": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_364cd6dc-5687-4f4b-b6e3-ae3d40ef1e68",
             "Director_Office": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_af44fa3c-55d1-407d-944d-5d34ce3860eb",
             "Director_Fax": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_fcd8abb1-ad58-4589-9876-e1a7f721af28",
-            "Director_Compliance_Checkbox": "#ctl00_ContentPlaceHolder1_FormEngine1_cl1d7945cd-95c5-470a-9d62-f949c869910a_1",
-            "Director_Also_Member_Checkbox": "#ctl00_ContentPlaceHolder1_FormEngine1_cl258e89d8-9993-41bb-a53d-27038e9c60e0_1"
+            "Director_Compliance_Checkbox": "#ctl00_ContentPlaceHolder1_FormEngine1_cl1d7945cd-129c-4b36-bdaa-da16fb3e7b9f_1",
+            "Director_Also_Member_Checkbox": "#ctl00_ContentPlaceHolder1_FormEngine1_cl258e89d8-73e5-4f8f-b933-0206057d69e8_1"
         }
     },
 
     // =========================================================================
     // NEW: Members/Shareholders Form (Repeater - for multiple members)
     // =========================================================================
+
     Members_Form: {
         waitForElement: 'ALL:Add',
         tabClickSelector: 'ALL:Members/Shareholders',
@@ -120,40 +121,120 @@ const SSM_MAPPINGS = {
         saveButtonSelector: '#ctl00_ContentPlaceHolder1_FormEngine1_btnSave',
         nextButtonSelector: null,
         fieldOrder: [
-            "Member_Promoter_Type", "Member_New_Or_Existing",
-            "Member_ID_Type", "Member_New_IC", "Member_Name", "Member_DOB",
-            "Member_Nationality", "Member_Gender", "Member_Race",
-            "Member_Address_Line1", "Member_Address_Line2", "Member_Address_Line3",
-            "Member_Country", "Member_State", "Member_City", "Member_Postcode",
-            "Member_Email", "Member_Mobile", "Member_Office", "Member_Fax",
-            "Member_Price_Per_Share", "Member_Number_Of_Shares", "Member_Class_Of_Shares",
+            // --- 1. TOP SELECTION ---
+            "Member_Promoter_Type",
+            "Member_New_Or_Existing",
+
+            // --- 2. BODY CORPORATE INFO (Visible only if Body Corp selected) ---
+            "Member_Type",                      // Triggers Page Reload
+            "Member_Company_Registration_No",   // ROC / LLP Number
+            "Member_Establishment_Act",         // Govt Agency Only
+            "Member_Corporate_Name",
+            "Member_Place_of_incorporation",
+
+            // --- 2b. BODY CORPORATE ADDRESS ---
+            "Member_Corp_Address_Line1",
+            "Member_Corp_Address_Line2",
+            "Member_Corp_Address_Line3",
+            "Member_Corp_Country",              // Triggers Postback
+            "Member_Corp_State",
+            "Member_Corp_City",
+            "Member_Corp_Postcode",
+
+            // --- 3. INDIVIDUAL INFO (Visible only if Individual selected) ---
+            "Member_ID_Type",
+            "Member_New_IC",                    // Triggers Auto-fill
+            "Member_Name",
+            "Member_DOB",
+            "Member_Nationality",               // Triggers Race Load
+            "Member_Gender",
+            "Member_Race",
+
+            // --- 3b. INDIVIDUAL ADDRESS ---
+            "Member_Address_Line1",
+            "Member_Address_Line2",
+            "Member_Address_Line3",
+            "Member_Country",                   // Triggers Postback
+            "Member_State",
+            "Member_City",
+            "Member_Postcode",
+
+            // --- 4. CONTACT INFO (Shared) ---
+            "Member_Email",
+            "Member_Mobile",
+            "Member_Office",
+            "Member_Fax",
+
+            // --- 5. SHARES (Shared) ---
+            "Member_Price_Per_Share",
+            "Member_Number_Of_Shares",
+            "Member_Class_Of_Shares",
+
+            // --- 6. REPRESENTATIVE (Body Corporate Only - Bottom) ---
+            "Member_Rep_Name",
+            "Member_Rep_NRIC",
+            "Member_Rep_Designation",
+
+            // --- 7. CONFIRMATION ---
             "Member_Compliance_Checkbox"
         ],
         fields: {
-            "Member_Promoter_Type": "RADIO:ctl00_ContentPlaceHolder1_FormEngine1_rb60f0186e-8260-496e-b7d1-e94ef88e798f",
-            "Member_New_Or_Existing": "RADIO:ctl00_ContentPlaceHolder1_FormEngine1_rb049630b2-4d10-4ed3-bb25-8664fd373650",
-            "Member_ID_Type": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_78453472-aae3-4613-bc75-a8315a6b0933_ddlGroup",
-            "Member_New_IC": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_00f606c7-3c72-4d9d-bc32-9cb77085698b",
-            "Member_Name": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_981d115a-939a-4171-8930-74567be43e33",
-            "Member_DOB": "#ctl00_ContentPlaceHolder1_FormEngine1_ctl103_txtDate",
-            "Member_Nationality": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_50ca7246-8149-43c3-98fc-d4039867c295_ddlGroup",
-            "Member_Gender": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_11307ed3-911a-4939-9d95-aec0dc1f6815_ddlGroup",
-            "Member_Race": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c95781a5-8ed5-43a9-9599-73e72e1c9598_ddlGroup",
-            "Member_Address_Line1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_dc2f20bd-e0d4-42ea-a4b3-d58676646535",
-            "Member_Address_Line2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_7f4d7f55-154a-4d2d-944a-10f5451e04cf",
-            "Member_Address_Line3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_dc7e5c54-758c-4f81-9afb-a67503ef974b",
-            "Member_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_41a6b0c6-30c1-4cd4-8f77-ec07ade33967_ddlGroup",
-            "Member_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_ec798b1b-68ca-426c-897b-ed554cc3c829_ddlGroup",
-            "Member_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_5b045e41-01f1-4f18-a68f-9a997f642674_ddlGroup",
-            "Member_Postcode": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_9f7f041d-932d-4318-91ac-d8204646092e_ddlGroup",
-            "Member_Email": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_e005beeb-99ad-4f51-8742-0f074d207d62",
-            "Member_Mobile": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_ae56f4f2-5381-4202-b25c-89a385203f19",
-            "Member_Office": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_452b4507-7407-4def-9192-3860010ca4cd",
-            "Member_Fax": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_b70954b9-8e10-48e0-bb74-be481878be7b",
+            // --- RADIOS ---
+            "Member_Promoter_Type": "RADIO:ctl00_ContentPlaceHolder1_FormEngine1_rb60f0186e-9a9c-4f3e-b6e4-4d8fd8fd9fd8",
+            "Member_New_Or_Existing": "RADIO:ctl00_ContentPlaceHolder1_FormEngine1_rb049630b2-344d-403c-84e8-22ba2a6ec6fe",
+
+            // --- BODY CORPORATE ---
+            "Member_Type": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_4d7f45d4-467b-45af-8e68-e9912c848434_ddlGroup",
+            "Member_Company_Registration_No": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_e414afde-f588-4e5a-a833-6a332288a9e0",
+            "Member_Establishment_Act": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_65d17b52-5e2c-44c1-86ca-4eeecf2d8ee4",
+            "Member_Corporate_Name": "#ctl00_ContentPlaceHolder1_FormEngine1_romf_2d00521b-3d88-435c-9185-8271ea23cae4",
+            "Member_Place_of_incorporation": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_80b697d5-6d45-4788-ad7d-506d007814ef",
+
+            // --- BODY CORP ADDRESS ---
+            "Member_Corp_Address_Line1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_7868b1aa-1d58-4c37-9913-f9444c583be6",
+            "Member_Corp_Address_Line2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_01f53537-e6a0-4a1f-82d4-78e94decce6d",
+            "Member_Corp_Address_Line3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c8ae1d7e-2f51-4f75-8238-0941733e7a5b",
+            "Member_Corp_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_a74c5a17-734b-4e70-afa0-12feaf2ead91_ddlGroup",
+            "Member_Corp_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_feedb64b-dea2-4ed4-b2b8-5720e8420f10_ddlGroup",
+            "Member_Corp_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_33a145b5-75fd-4c4c-878f-0226a8130e61_ddlGroup",
+            "Member_Corp_Postcode": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_4c897100-8357-487e-8af6-052e112d0f66_ddlGroup",
+
+            // --- INDIVIDUAL FIELDS ---
+            "Member_ID_Type": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_4253bb22-f6a4-439b-83eb-67b8fa0422ac_ddlGroup",
+            "Member_New_IC": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_00f606c7-86a3-4a1f-9844-70df7ba5da7c",
+            "Member_Name": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_8fb72166-0010-4bf8-889c-85119ebccf8c",
+            "Member_DOB": "#ctl00_ContentPlaceHolder1_FormEngine1_ctl30_txtDate",
+            "Member_Nationality": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_6d59e6ed-5584-4a5f-996b-43a80b0c385f_ddlGroup",
+            "Member_Gender": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_af210407-086e-48fb-b81b-d52d68ad9f0e_ddlGroup",
+            "Member_Race": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_faddff0a-0a67-4c3d-87c4-17f3e76531bb_ddlGroup",
+
+            // --- INDIVIDUAL ADDRESS ---
+            "Member_Address_Line1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_fe773982-1fbf-431c-92c7-04f78df1c385",
+            "Member_Address_Line2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_f66fc72f-2336-4cf3-8e66-dd6c1cb87256",
+            "Member_Address_Line3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_610748f9-64e5-4c34-adef-42c22caedabb",
+            "Member_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_da6ea893-b2b4-4fc6-aa1a-6054e210b302_ddlGroup",
+            "Member_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_649394c3-7301-42ca-8174-83b755c2277e_ddlGroup",
+            "Member_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_4e5c5e6b-78f4-4821-8b5a-7ba3cb2f714a_ddlGroup",
+            "Member_Postcode": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_7b3f0d7e-de0f-45cf-87ed-b4b3d7ae0b95_ddlGroup",
+
+            // --- CONTACT INFO ---
+            "Member_Email": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_db0e311e-ba9c-432f-9363-96eb09b95e04",
+            "Member_Mobile": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_60c6db22-1dd4-4163-a503-0396a7a0a105",
+            "Member_Office": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0f932d41-cb0a-4452-9f9c-6bc36007f06f",
+            "Member_Fax": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_22944627-750b-4be2-af35-665ed8984b6f",
+
+            // --- SHARES ---
             "Member_Price_Per_Share": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_a4725b2a-3782-4785-9776-f8f7f3eca44f",
             "Member_Number_Of_Shares": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_35e5bd3e-51ed-4590-902c-396407d8afd9",
-            "Member_Class_Of_Shares": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_78f7e250-70f0-4dc6-ab3e-28954203ae8d_ddlGroup",
-            "Member_Compliance_Checkbox": "#ctl00_ContentPlaceHolder1_FormEngine1_cl91fe61d1-6625-450f-a3ff-a9314de691f1_1"
+            "Member_Class_Of_Shares": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_ffb98b74-d407-4441-9ead-7b551bd72827_ddlGroup",
+
+            // --- REPRESENTATIVE ---
+            "Member_Rep_Name": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_f116a325-1d42-4652-a9fe-51c4b6aa9bbf",
+            "Member_Rep_NRIC": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_1f4b021a-d2f8-4830-9ad6-dea81fca1f14",
+            "Member_Rep_Designation": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_97a4ba6d-c849-48db-aa19-9e9bc4a7351b",
+
+            // --- COMPLIANCE ---
+            "Member_Compliance_Checkbox": "#ctl00_ContentPlaceHolder1_FormEngine1_cl91fe61d1-084b-49dd-8823-2fb043c32d2b_1"
         }
     },
 
@@ -161,7 +242,7 @@ const SSM_MAPPINGS = {
     // NEW: Employee Information Form (Single Object)
     // =========================================================================
     Agency_Form: {
-        waitForElement: '#ctl00_ContentPlaceHolder1_FormEngine1_UpdatePanel1',
+        waitForElement: '#ctl00_ContentPlaceHolder1_FormEngine1_mf_0b7d797c-1110-4fe9-95eb-9808cdd5e9d4',
         tabClickSelector: 'ALL:Information To Agency',
         nextButtonSelector: '#ctl00_ContentPlaceHolder1_FormEngine1_Button4',
         fieldOrder: [
@@ -172,23 +253,23 @@ const SSM_MAPPINGS = {
             "Branch_Phone_Number", "Branch_Fax_Number", "Agency_Contact_Person", "Declaration_Confirm"
         ],
         fields: {
-            "Has_Employees": "RADIO:ctl00_ContentPlaceHolder1_FormEngine1_rbbe7c9126-11f8-472d-8646-68194aade993",
-            "Num_Fulltime_Local_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0b7d797c-9ef1-424a-85d1-16ee71115858",
-            "Num_Fulltime_Foreign_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_3cb397fb-c529-4d64-94e8-89c07217edba",
-            "Num_Parttime_Local_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0137ce81-e01d-407b-8b5e-049830502123",
-            "Num_Parttime_Foreign_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_43292415-dc86-4f38-8e6c-0e27f428416d",
-            "Total_Num_Employees": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_6626508d-8c10-4389-9a2f-e8d128b789ae",
+            "Has_Employees": "RADIO:ctl00_ContentPlaceHolder1_FormEngine1_rbbe7c9126-dec5-488e-b703-9b7de3809964",
+            "Num_Fulltime_Local_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0b7d797c-1110-4fe9-95eb-9808cdd5e9d4",
+            "Num_Fulltime_Foreign_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_773b72e9-8425-418f-b41c-4adf7063ad16",
+            "Num_Parttime_Local_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0b621642-f76f-4fb4-a7fa-4cb0750d2cb0",
+            "Num_Parttime_Foreign_Employee": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_799d4b0d-d942-4c7c-9d77-8c40bc6d3c09",
+            "Total_Num_Employees": "#ctl00_ContentPlaceHolder1_FormEngine1_romf_aec2e343-3c6f-4cde-adeb-17f647c35724",
             "Employee_Start_Date": "#ctl00_ContentPlaceHolder1_FormEngine1_ctl178_txtDate",
-            "Branch_Address_Line1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0ca8b618-202d-4566-aebe-9c3f58223689",
-            "Branch_Address_Line2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_edac1b55-6677-400a-8bf8-be922377a06f",
-            "Branch_Address_Line3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_5374823a-e95e-450f-90e4-7d2fb74464c2",
-            "Branch_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_f3391b5c-4869-42b7-a367-1736b429074d_ddlGroup",
-            "Branch_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_d0c6487e-d450-42f0-a006-031f822cc269_ddlGroup",
-            "Branch_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_9921764d-5853-41c3-8837-d1a293699709_ddlGroup",
-            "Branch_Postcode": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_cc6d4ea2-97b7-4c3d-bc81-2736b00609ff_ddlGroup",
-            "Branch_Phone_Number": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_304e280d-855f-4638-a28a-78f7e260fb1e",
-            "Branch_Fax_Number": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_98f7e230-7050-4dc6-ab3e-28954203ae8d",
-            "Agency_Contact_Person": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_11307ed3-911a-4939-9d95-aec0dc1f6815",
+            "Branch_Address_Line1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_0ca8b618-de23-452a-8965-07a7b57889f9",
+            "Branch_Address_Line2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_7c6226ce-267e-4e89-b899-516030d2928d",
+            "Branch_Address_Line3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c79f4502-7c5a-4024-88bd-18014251ca0b",
+            "Branch_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_b2438850-9276-4654-9b95-3495f5a68695_ddlGroup",
+            "Branch_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_dd452bde-0371-4556-89ac-d4cc2820443d_ddlGroup",
+            "Branch_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_76232d45-82a8-40b7-981e-9afc91743d3b_ddlGroup",
+            "Branch_Postcode": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c0204fe2-9133-479b-8b2c-d8aff8030793_ddlGroup",
+            "Branch_Phone_Number": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_76676f50-b260-4ffe-b1ec-3b86b53f16ad",
+            "Branch_Fax_Number": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_94e41c84-af64-4015-805b-ef76dc7bf20d",
+            "Agency_Contact_Person": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c72e6fb7-b9c9-4518-a10d-0de983d80879",
             "Declaration_Confirm": "#ctl00_ContentPlaceHolder1_FormEngine1_clbd45c870-35c6-4412-9740-0a069f061ff3_1"
         }
     }
@@ -244,47 +325,70 @@ const SITE_CONFIG = {
     },
     fieldRules: {
         ajaxTriggers: [
+            // ==========================================
+            // NRIC/IC Special Handling (auto-fill prevention)
+            // ==========================================
             {
-                keyEquals: 'Registered_Country',
+                keyEquals: 'Director_NRIC',
                 waitForAjax: true,
-                postDelay: 3000  // ✅ Increased - cascading needs time
+                postDelay: 3500
             },
             {
-                keyEquals: 'Registered_State',
+                keyEquals: 'Member_New_IC',
                 waitForAjax: true,
-                postDelay: 2500
+                postDelay: 3500
             },
             {
-                keyEquals: 'Registered_City',
+                keyEquals: 'Member_Nationality',
                 waitForAjax: true,
-                postDelay: 2000
+                postDelay: 5000 // Increased to allow the "Race" dropdown to populate
             },
             {
-                keyEquals: 'Business_Country',
+                keyEquals: 'Member_Gender',
                 waitForAjax: true,
-                postDelay: 3000
+                postDelay: 4000 // Ensure Postback completes before moving to Race
             },
             {
-                keyEquals: 'Business_State',
+                keyEquals: 'Member_Class_Of_Shares',
                 waitForAjax: true,
-                postDelay: 2500
+                postDelay: 3500
             },
             {
-                keyEquals: 'Business_City',
+                keyEquals: 'Member_Promoter_Type', // <--- THIS IS THE FIX
                 waitForAjax: true,
-                postDelay: 2000
+                postDelay: 3500 // Give it 3.5 seconds to switch the form layout
             },
+
+            // ====================================================
+            // 2. WAIT FOR BODY CORPORATE TYPE (ROC vs FOREIGN)
+            // ====================================================
+            {
+                keyEquals: 'Member_Type',
+                waitForAjax: true,
+                postDelay: 3500
+            },
+            // ==========================================
+            // Country fields need EXTRA time for cascading
+            // ==========================================
+            {
+                keyContains: 'Country',
+                waitForAjax: true,
+                postDelay: 4000  // Longer wait for country → state cascade
+            },
+            // ==========================================
+            // Universal Rule: ALL _ddlGroup fields
+            // ==========================================
             {
                 selectorContains: '_ddlGroup',
                 waitForAjax: true,
-                postDelay: 2000  // ✅ Default for all dropdowns
+                postDelay: 2500
             }
         ],
         extraDelayFields: [],
     },
 
     enableSmartJump: true,
-    pageSequence: ['Incorp_Form', 'Business_Code_Form', 'Directors_Form', 'Members_Form', 'Agency_Form'],
+    pageSequence: ['Incorp_Form', 'Business_Code_Form', 'Members_Form',],
     mappings: SSM_MAPPINGS
 };
 
@@ -409,14 +513,14 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (status === 'skipped') { iconText = '⊘'; iconColor = 'gray'; }
 
             item.innerHTML = `
-                <div style="display:flex; align-items:flex-start;">
-                    <span class="checklist-icon" style="margin-right:10px; font-weight:bold; min-width:20px; color:${iconColor}">${iconText}</span>
-                    <div style="flex:1;">
-                        <span class="page-name">${index + 1}. ${pageName}</span>
-                        <div class="error-detail" style="color:#d32f2f; font-size:11px; margin-top:4px; display:none;"></div>
+                    <div style="display:flex; align-items:flex-start;">
+                        <span class="checklist-icon" style="margin-right:10px; font-weight:bold; min-width:20px; color:${iconColor}">${iconText}</span>
+                        <div style="flex:1;">
+                            <span class="page-name">${index + 1}. ${pageName}</span>
+                            <div class="error-detail" style="color:#d32f2f; font-size:11px; margin-top:4px; display:none;"></div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
             if (status === 'success') item.style.backgroundColor = "#e8f5e9";
             else if (status === 'failed') item.style.backgroundColor = "#ffebee";
             else if (status === 'warning') item.style.backgroundColor = "#fff3e0";
@@ -455,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function runFullAutomation() {
-        console.log("%c🚀 AUTOMATION SCRIPT VERSION: FIX_V3 (Force Click + Data Fix)", "color: white; background: green; font-size: 16px; padding: 10px;");
+        console.log("%c🚀 AUTOMATION SCRIPT VERSION: FIX_V8 (Single Click)", "color: white; background: green; font-size: 16px; padding: 10px;");
         const jsonStr = jsonInput ? jsonInput.value : "";
         if (!jsonStr) return updateStatus("Error: Paste JSON first.", "red");
         let formData;
@@ -526,71 +630,62 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else pageFound = true;
                     }
                 }
-
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 1000));
 
                 if (mapping.repeaterKey) {
                     const items = formData[mapping.repeaterKey] || [];
 
-                    // Loop through each item in the repeater
                     for (let j = 0; j < items.length; j++) {
                         if (!isRunning) throw new Error("Stopped by user.");
 
                         updateStatus(`Processing ${pageName} item ${j + 1}/${items.length}...`, "blue");
 
-                        // Step 1: Click the Add button to open the form (With Retry)
+                        // =========================================================
+                        // STEP 1: CLICK ADD BUTTON (SINGLE ATTEMPT)
+                        // =========================================================
                         if (mapping.addButtonSelector) {
                             let formOpened = false;
                             const firstFieldKey = (mapping.fieldOrder && mapping.fieldOrder.length > 0) ? mapping.fieldOrder[0] : null;
                             const firstFieldSelector = firstFieldKey ? mapping.fields[firstFieldKey] : null;
 
-                            for (let attempt = 1; attempt <= 3; attempt++) {
-                                updateStatus(`[Attempt ${attempt}] Clicking 'Add' button...`, "blue");
+                            // 1. Wait for Button
+                            await injectScriptWithRetry(tab.id, waitForElementOnPage, [mapping.addButtonSelector, 5000]);
 
-                                // Ensure button is there
-                                await injectScriptWithRetry(tab.id, waitForElementOnPage, [mapping.addButtonSelector, 5000]);
-                                const clickRes = await clickElementInMainWorld(tab.id, mapping.addButtonSelector);
-                                console.log(`[Auto] Click Result for ${mapping.addButtonSelector}:`, clickRes);
-                                await new Promise(r => setTimeout(r, 2000)); // Wait for postback/modal
+                            // 2. Click Button (ONE SHOT)
+                            const clickRes = await clickElementInMainWorld(tab.id, mapping.addButtonSelector);
+                            console.log(`[Auto] Click Result for ${mapping.addButtonSelector}:`, clickRes);
 
-                                if (firstFieldSelector || mapping.saveButtonSelector) {
-                                    // Check if form opened by looking for FIRST FIELD or SAVE BUTTON
-                                    const visibilityCheck = await injectScriptWithRetry(tab.id, (sel1, sel2) => {
-                                        const getEl = (s) => document.querySelector(s) || document.getElementById(s.replace('#', ''));
+                            // 3. Wait for Modal/Form
+                            await new Promise(r => setTimeout(r, 2000)); // Postback delay
+                            await new Promise(r => setTimeout(r, 1000)); // Stabilization
 
-                                        const el1 = sel1 ? getEl(sel1) : null;
-                                        const el2 = sel2 ? getEl(sel2) : null;
+                            // 4. Verification
+                            if (firstFieldSelector || mapping.saveButtonSelector) {
+                                const visibilityCheck = await injectScriptWithRetry(tab.id, (sel1, sel2) => {
+                                    const getEl = (s) => {
+                                        if (!s) return null;
+                                        if (s.startsWith('RADIO:')) return document.querySelector('table[id*="' + s.replace('RADIO:', '') + '"]') || document.body;
+                                        return document.querySelector(s) || document.getElementById(s.replace('#', ''));
+                                    };
+                                    const el1 = sel1 ? getEl(sel1) : null;
+                                    const el2 = sel2 ? getEl(sel2) : null;
+                                    const isVisible = (e) => e && e.offsetParent !== null;
+                                    if ((el1 && isVisible(el1)) || (el2 && isVisible(el2))) return { visible: true };
+                                    return { visible: false };
+                                }, [firstFieldSelector, mapping.saveButtonSelector]);
 
-                                        const isVisible = (e) => e && e.offsetParent !== null;
-
-                                        let result = { found: false, visible: false, reason: "Neither found" };
-
-                                        if (el1 && isVisible(el1)) return { found: true, visible: true, el: 'Field: ' + sel1 };
-                                        if (el2 && isVisible(el2)) return { found: true, visible: true, el: 'SaveBtn: ' + sel2 };
-
-                                        if (el1) result = { found: true, visible: false, reason: "Field hidden" };
-                                        else if (el2) result = { found: true, visible: false, reason: "SaveBtn hidden" };
-
-                                        return result;
-                                    }, [firstFieldSelector, mapping.saveButtonSelector]);
-
-                                    console.log(`[Auto] Form Open Check:`, visibilityCheck);
-
-                                    if (visibilityCheck && visibilityCheck.visible) {
-                                        formOpened = true;
-                                        break; // Success!
-                                    } else {
-                                        console.warn(`[Attempt ${attempt}] Form check failed.`, visibilityCheck);
-                                    }
-                                } else {
-                                    // If no fields to check, just assume it worked (fallback)
+                                if (visibilityCheck && visibilityCheck.visible) {
                                     formOpened = true;
-                                    break;
+                                } else {
+                                    console.warn(`[Auto] Warning: Form might not be open. Proceeding anyway...`);
+                                    formOpened = true; // Assume success to avoid stuck loop, error will catch later
                                 }
+                            } else {
+                                formOpened = true;
                             }
 
                             if (!formOpened) {
-                                throw new Error(`Failed to open form for ${pageName} after 3 attempts. Check 'Add' button selector or page responsiveness.`);
+                                throw new Error(`Failed to open form for ${pageName}. Check 'Add' button.`);
                             }
                         }
 
@@ -612,14 +707,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             updateStatus(`Saving item ${j + 1}...`, "blue");
                             await clickElementInMainWorld(tab.id, mapping.saveButtonSelector);
 
-                            // Step 4: Verify Return to List View (P1)
-                            // We wait for the 'Add' button to become visible again, signifying the modal/page has closed.
+                            // Step 4: Verify Return to List View
                             if (mapping.addButtonSelector) {
                                 await updateStatus("Waiting for return to List View...", "blue");
                                 await injectScriptWithRetry(tab.id, waitForElementOnPage, [mapping.addButtonSelector, 15000]);
-                                await new Promise(r => setTimeout(r, 1000)); // Stabilization delay
+                                await new Promise(r => setTimeout(r, 1000));
                             } else {
-                                await new Promise(r => setTimeout(r, 2500)); // Fallback delay
+                                await new Promise(r => setTimeout(r, 2500));
                             }
                         }
                     }
@@ -628,19 +722,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (mapping.fieldOrder) fields.__fieldOrder = mapping.fieldOrder;
 
                     updateStatus(`Stabilizing ${pageName}...`, "blue");
-                    await new Promise(r => setTimeout(r, 1500)); // Give page time to initialize scripts
+                    await new Promise(r => setTimeout(r, 1500));
 
                     const fillResult = await injectScriptWithRetry(tab.id, fillPageWithData, [formData, fields, 0, SITE_CONFIG.fieldRules], 'MAIN');
-                    console.log(`[Auto] Fill Result for ${pageName}:`, fillResult);
-
                     if (fillResult && !fillResult.success) {
                         updateStatus(`Error filling ${pageName}: ${fillResult.error}`, "red");
                         updateChecklistStatus(pageName, 'failed');
                         throw new Error(`Filling failed for ${pageName}: ${fillResult.error}`);
-                    }
-
-                    if (fillResult && fillResult.skipped > 0) {
-                        updateStatus(`Warning: ${fillResult.skipped} fields were skipped (Disabled/ReadOnly) in ${pageName}`, "orange");
                     }
                 }
 
@@ -662,76 +750,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// --- INJECTED FUNCTIONS (Generally Reusable) ---
+// --- INJECTED FUNCTIONS ---
 async function injectScriptWithRetry(tabId, func, args = [], world = 'ISOLATED') {
     const res = await chrome.scripting.executeScript({ target: { tabId }, func, args, world });
     return res && res.length ? res[0].result : null;
 }
 
-// --- REFACTORED: Single Function to Find & Click 'Add' Button ---
 async function executeAddButtonClick(tabId, selector) {
     return new Promise(resolve => {
         chrome.scripting.executeScript({
             target: { tabId }, world: 'MAIN',
             func: (sel) => {
-                // STRATEGY 1: Direct ID/Selector Match (Standard)
                 if (!sel.startsWith('ALL:')) {
                     let el = document.querySelector(sel) || document.getElementById(sel.replace('#', ''));
-                    // Fallback for ASP.NET IDs
                     if (!el && !sel.startsWith('#')) el = document.getElementById('MainContent_' + sel);
-
                     if (el) {
-                        console.log(`[Auto] Direct ID match for '${sel}':`, el);
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        el.style.border = "5px solid green"; // Green for direct ID
+                        el.style.border = "5px solid green";
                         setTimeout(() => {
                             el.click();
                             el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
                         }, 200);
-                        return { success: true, found: true, method: 'direct' };
+                        return { success: true, found: true };
                     }
-                    console.warn(`[Auto] Direct ID match failed for '${sel}'`);
-                    return { success: false, found: false, method: 'direct' };
+                    return { success: false, found: false };
                 }
-
-                // STRATEGY 2: Fuzzy Text/Add Button Search (ALL:...)
                 const textToFind = sel.replace('ALL:', '').toLowerCase().trim();
                 const selectorQuery = 'a, span, .formfieldtablink, button, .datagrid_addrecordbutton, input[type="button"], input[type="submit"], input[type="image"], img[onclick], div[role="button"]';
-
-                // 1. Finder Logic
-                const allElems = Array.from(document.querySelectorAll(selectorQuery))
-                    .filter(e => e.offsetParent !== null && e.style.visibility !== 'hidden' && e.style.display !== 'none');
-
+                const allElems = Array.from(document.querySelectorAll(selectorQuery)).filter(e => e.offsetParent !== null && e.style.visibility !== 'hidden' && e.style.display !== 'none');
                 let bestMatch = null;
                 let bestScore = 0;
-
                 allElems.forEach(el => {
                     let score = 0;
                     const txt = (el.innerText || el.value || el.alt || el.title || "").toLowerCase().trim();
                     const id = (el.id || "").toLowerCase();
                     const cls = (el.className || "").toLowerCase();
-
-                    // Scoring
                     if (txt === textToFind) score += 100;
                     else if (txt.startsWith(textToFind + ' ')) score += 85;
                     else if (txt.includes(textToFind)) score += 50;
-
-                    if (id.includes("addentry") || id.includes('btnadd') || cls.includes("addrecord")) {
-                        if (textToFind === 'add') score += 90;
-                    }
-
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMatch = el;
-                    }
+                    if (id.includes("addentry") || id.includes('btnadd') || cls.includes("addrecord")) { if (textToFind === 'add') score += 90; }
+                    if (score > bestScore) { bestScore = score; bestMatch = el; }
                 });
-
-                // 2. Click Logic
                 if (bestMatch && bestScore > 0) {
-                    console.log(`[Auto] executing ONE-SHOT click on:`, bestMatch);
                     bestMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    bestMatch.style.border = "5px solid red"; // Visual Confirmation
-
+                    bestMatch.style.border = "5px solid red";
                     setTimeout(() => {
                         bestMatch.click();
                         bestMatch.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
@@ -749,8 +811,6 @@ async function executeAddButtonClick(tabId, selector) {
 }
 
 function clickElementInMainWorld(tabId, selector) {
-    // Legacy wrapper kept for compatibility with other parts if needed, 
-    // but main loop will use executeAddButtonClick
     return executeAddButtonClick(tabId, selector);
 }
 
@@ -768,39 +828,20 @@ function waitForElementOnPage(selector, timeout) {
         const findEl = () => {
             if (selector.startsWith('ALL:')) {
                 const textToFind = selector.replace('ALL:', '').toLowerCase();
-                // FIXED: Added 'span' and verified visibility logic matches clickElementInMainWorld
                 const allElems = Array.from(document.querySelectorAll('a, span, .formfieldtablink, button, .datagrid_addrecordbutton, input[type="button"], input[type="submit"], input[type="image"], img[onclick], div[role="button"]'))
-                    .filter(e => {
-                        return e.offsetParent !== null && e.style.visibility !== 'hidden' && e.style.display !== 'none';
-                    });
-
-                const found = allElems.find(l => {
-                    const txt = (l.innerText || l.value || l.alt || l.title || "").toLowerCase();
-                    return txt.includes(textToFind);
-                });
-
-                if (found) console.log(`[Auto] WaitForElement found: ${selector}`, found);
-                return found;
+                    .filter(e => e.offsetParent !== null && e.style.visibility !== 'hidden' && e.style.display !== 'none');
+                return allElems.find(l => (l.innerText || l.value || l.alt || l.title || "").toLowerCase().includes(textToFind));
             } else {
                 let sel = selector.replace('ALL:', '');
                 if (!sel.match(/[#\.\[]/)) sel = '#' + sel;
                 const el = document.querySelector(sel);
-                if (el) {
-                    if (el.offsetParent !== null) return el;
-                    console.log(`[Auto] WaitForElement: Found ${sel} but it is HIDDEN (offsetParent is null)`);
-                }
-                return null;
+                return (el && el.offsetParent !== null) ? el : null;
             }
         };
-
         if (findEl()) return resolve(true);
         const observer = new MutationObserver(() => { if (findEl()) { observer.disconnect(); resolve(true); } });
         observer.observe(document.body, { childList: true, subtree: true });
-        setTimeout(() => {
-            observer.disconnect();
-            console.warn(`[Auto] WaitForElement TIMEOUT: ${selector}`);
-            resolve({ error: 'Timeout' });
-        }, timeout);
+        setTimeout(() => { observer.disconnect(); resolve({ error: 'Timeout' }); }, timeout);
     });
 }
 
@@ -815,7 +856,7 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
             let updateDetected = false;
             const observer = new MutationObserver(() => {
                 updateDetected = true;
-                console.log("📡 Page update detected!");
+                // console.log("📡 Page update detected!");
             });
             const mainContent = document.getElementById('ctl00_ContentPlaceHolder1_UpdatePanel1') || document.body;
             observer.observe(mainContent, {
@@ -853,7 +894,62 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
         });
     };
 
-    const setFieldValue = async (selector, value) => {
+    const cascadingFields = {
+        // =========================================================
+        // 1. CRITICAL: FIELDS THAT TRIGGER PAGE RELOADS
+        // =========================================================
+
+        // ADDRESS POSTCODES (These refresh the page -> Wipes "Class of Share")
+        'Registered_Postcode': [],
+        'Business_Postcode': [],
+        'Director_Postcode': [],
+        'Member_Postcode': [],         // <--- FIX FOR CLASS OF SHARES
+        'Member_Corp_Postcode': [],    // <--- FIX FOR CORPORATE MEMBERS
+        'Branch_Postcode': [],
+
+        // NATIONALITY (Refreshes page to load Race -> Wipes "Race/Gender")
+        'Director_Nationality': ['Director_Race', 'Director_Gender'],
+        'Member_Nationality': ['Member_Race', 'Member_Gender'],
+
+        // IC / NRIC (Refreshes page to auto-fill DOB/Gender)
+        'Director_NRIC': ['Director_Name', 'Director_Gender'],
+        'Member_New_IC': ['Member_Name', 'Member_Gender'],
+
+        // =========================================================
+        // 2. STANDARD CASCADING DROPDOWNS
+        // =========================================================
+
+        // Registered Address
+        'Registered_Country': ['Registered_State', 'Registered_City', 'Registered_Postcode'],
+        'Registered_State': ['Registered_City', 'Registered_Postcode'],
+
+        // Business Address
+        'Business_Country': ['Business_State', 'Business_City', 'Business_Postcode'],
+        'Business_State': ['Business_City', 'Business_Postcode'],
+
+        // Director Address
+        'Director_Country': ['Director_State', 'Director_City', 'Director_Postcode'],
+        'Director_State': ['Director_City', 'Director_Postcode'],
+
+        // Member Address (Individual)
+        'Member_Country': ['Member_State', 'Member_City', 'Member_Postcode'],
+        'Member_State': ['Member_City', 'Member_Postcode'],
+
+        // Member Address (Body Corporate)
+        'Member_Corp_Country': ['Member_Corp_State', 'Member_Corp_City', 'Member_Corp_Postcode'],
+        'Member_Corp_State': ['Member_Corp_City', 'Member_Corp_Postcode'],
+
+        // Branch Address
+        'Branch_Country': ['Branch_State', 'Branch_City', 'Branch_Postcode'],
+        'Branch_State': ['Branch_City', 'Branch_Postcode'],
+
+        // Other Triggers
+        'Business_Code': [],
+        'Member_Type': [],  // Body Corporate Type change
+        'Member_ID_Type': [],
+        'Director_ID_Type': []
+    };
+    const setFieldValue = async (selector, value, key) => {
         if (!selector) return false;
 
         // 1. Handle Radios
@@ -872,19 +968,48 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
         let el = document.querySelector(selector) || document.getElementById(selector.replace('#', ''));
         if (!el && !selector.startsWith('#')) el = document.getElementById('MainContent_' + selector);
 
+        // FALLBACK: Search by Label Text
+        if (!el && key) {
+            const cleanKey = key.replace(/Director_|Member_|Branch_|Corp_/, '').replace(/_/g, ' ');
+            const labels = Array.from(document.querySelectorAll('label, span.Label, td.Label'));
+            const targetLabel = labels.find(l => {
+                const text = l.innerText.trim().toLowerCase();
+                return text === cleanKey.toLowerCase() || text.includes(cleanKey.toLowerCase());
+            });
+
+            if (targetLabel) {
+                console.log(`[Fill] Found potential label match: "${targetLabel.innerText.trim()}"`);
+                const forId = targetLabel.getAttribute('for');
+                if (forId) {
+                    el = document.getElementById(forId);
+                } else {
+                    el = targetLabel.nextElementSibling?.querySelector('input, select, textarea') ||
+                        targetLabel.parentElement?.nextElementSibling?.querySelector('input, select, textarea');
+                }
+            }
+        }
+
         if (!el) {
-            console.error(`[Fill] Element NOT FOUND: ${selector}`);
+            console.error(`[Fill] Element NOT FOUND: ${selector} (Key: ${key})`);
             return false;
         }
 
-        // WAIT FOR ENABLED: Some fields (Telerik) disable themselves while loading.
+        // WAIT FOR ENABLED
         if (el.disabled) {
             console.log(`[Fill] Field ${selector} is disabled, waiting up to 5s...`);
             await waitForEnabled(el);
         }
 
-        if (el.disabled || el.readOnly) {
-            console.warn(`[Fill] Skipping field ${selector} (ID: ${el.id}) - Disabled: ${el.disabled}, ReadOnly: ${el.readOnly}`);
+        // FIX: FORCE ENABLE READ-ONLY FIELDS
+        if (el.readOnly) {
+            console.log(`[Fill] 🔓 Removing ReadOnly from ${key} to force entry...`);
+            el.removeAttribute('readonly');
+            el.readOnly = false;
+            el.style.backgroundColor = "#fff";
+        }
+
+        if (el.disabled) {
+            console.warn(`[Fill] Skipping field ${selector} (ID: ${el.id}) - Disabled: ${el.disabled}`);
             return 'skipped';
         }
 
@@ -912,7 +1037,6 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
         }
         // 3. Handle Selects
         else if (el.tagName === 'SELECT') {
-            // WAIT FOR ITEMS: If it's a cascading dropdown, items might not be loaded yet.
             if (el.options.length <= 1 && value) {
                 console.log(`[Fill] Waiting for items to load in SELECT ${selector}...`);
                 await new Promise(res => {
@@ -941,7 +1065,6 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
 
         ['input', 'change', 'blur'].forEach(ev => el.dispatchEvent(new Event(ev, { bubbles: true })));
 
-        // --- DECOUPLED SYNC (CLEARS STACK TO AVOID STRICT ERRORS) ---
         return new Promise(resolve => {
             const syncId = 'ssm_sync_' + Math.random().toString(36).substr(2, 9);
             const safetyTimeout = setTimeout(() => {
@@ -959,245 +1082,164 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
             };
             window.addEventListener('message', handler);
 
-            // Replace the syncScript section (around line 730-860) with this:
-
-            // FIXED VERSION: Proper field type detection + Strict mode fix + Cascading wait
-
+            // =========================================================================
+            // INJECTED SCRIPT: Handles Telerik, DatePickers, and RETRY LOGIC
+            // =========================================================================
             const syncScript = `
-    (async function() {
-        const wait = (ms) => new Promise(res => setTimeout(res, ms));
-        
-        try {
-            const el = document.getElementById('${el.id}') || document.querySelector('${selector}');
-            const baseId = '${baseElement.id}' || '${selector}'.replace('#', '').replace('_ddlGroup', '');
-            const val = ${JSON.stringify(value)};
-            const selector = '${selector}';
+        (async function() {
+            const wait = (ms) => new Promise(res => setTimeout(res, ms));
             
-            // ========== CRITICAL: Detect if this is actually a Telerik ComboBox ==========
-            let isTelerikCombo = false;
-            let combo = null;
-            
-            if (typeof $find !== 'undefined') {
-                combo = $find(baseId) || $find(baseId + '_ddlGroup');
-                if (!combo && el) {
-                    const possibleIds = [
-                        el.id.replace('_Input', '').replace('_Value', ''),
-                        el.id.replace('_ddlGroup', ''),
-                        baseId.replace('_ddlGroup', '')
-                    ];
-                    for (const pid of possibleIds) {
-                        combo = $find(pid);
-                        if (combo) break;
-                    }
-                }
+            try {
+                const el = document.getElementById('${el.id}') || document.querySelector('${selector}');
+                const baseId = '${baseElement.id}' || '${selector}'.replace('#', '').replace('_ddlGroup', '');
+                const val = ${JSON.stringify(value)};
+                const selector = '${selector}';
                 
-                // Check if it has Telerik ComboBox methods
-                if (combo && combo.get_items && typeof combo.get_items === 'function') {
-                    isTelerikCombo = true;
-                }
-            }
-            
-            console.log('[Sync] Field:', selector);
-            console.log('[Sync] Is Telerik ComboBox:', isTelerikCombo);
-            console.log('[Sync] Value:', val);
-            
-            // ========== PATH A: TELERIK COMBOBOX (with autocomplete) ==========
-            if (isTelerikCombo && combo) {
-                console.log('[Sync] Using Telerik autocomplete method...');
+                // ========== CRITICAL: Detect if this is actually a Telerik ComboBox ==========
+                let isTelerikCombo = false;
+                let combo = null;
                 
-                const comboId = combo.get_id();
-                const inputEl = document.getElementById(comboId + '_Input');
-                const valueEl = document.getElementById(comboId + '_Value');
-                
-                if (!inputEl) {
-                    console.error('[Sync] ❌ Input element not found!');
-                    window.postMessage({ type: 'SYNC_COMPLETE', id: '${syncId}' }, '*');
-                    return;
-                }
-                
-                // Step 1: Clear
-                combo.clearSelection();
-                combo.set_text('');
-                combo.set_value('');
-                if (inputEl) inputEl.value = '';
-                if (valueEl) valueEl.value = '';
-                await wait(200);
-                
-                // Step 2: Type into field
-                inputEl.focus();
-                await wait(150);
-                
-                const searchText = String(val).trim();
-                inputEl.value = '';
-                
-                for (let i = 0; i < searchText.length; i++) {
-                    inputEl.value += searchText[i];
-                    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-                    await wait(30);
-                }
-                
-                inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-                inputEl.dispatchEvent(new Event('change', { bubbles: true }));
-                
-                console.log('[Sync] Typed:', searchText);
-                await wait(1500); // Wait for filtering
-                
-                // Step 3: Open dropdown if needed
-                let dropdownVisible = false;
-                const dropdownEl = combo.get_dropDownElement ? combo.get_dropDownElement() : 
-                                   document.getElementById(comboId + '_DropDown');
-                
-                if (dropdownEl) {
-                    dropdownVisible = dropdownEl.style.display !== 'none' && 
-                                    dropdownEl.style.visibility !== 'hidden';
-                }
-                
-                if (!dropdownVisible && combo.showDropDown) {
-                    combo.showDropDown();
-                    await wait(400);
-                }
-                
-                // Step 4: Find and select item
-                const items = combo.get_items();
-                const itemCount = items.get_count();
-                
-                console.log('[Sync] Items available:', itemCount);
-                
-                let item = null;
-                const searchLower = searchText.toLowerCase();
-                
-                // Exact match first
-                for (let i = 0; i < itemCount; i++) {
-                    const it = items.getItem(i);
-                    const text = (it.get_text() || '').trim();
-                    const value = (it.get_value() || '').trim();
+                if (typeof $find !== 'undefined') {
+                    const cleanId = baseId.replace('_ddlGroup', '');
                     
-                    if (text === searchText || value === searchText) {
-                        item = it;
-                        console.log('[Sync] ✓ Exact match:', text);
-                        break;
-                    }
-                }
-                
-                // Fuzzy match
-                if (!item && itemCount > 0) {
-                    let bestMatch = null;
-                    let bestScore = 0;
-                    
-                    for (let i = 0; i < itemCount; i++) {
-                        const it = items.getItem(i);
-                        const text = (it.get_text() || '').toLowerCase().trim();
-                        const value = (it.get_value() || '').toLowerCase().trim();
-                        
-                        let score = 0;
-                        if (text === searchLower || value === searchLower) score = 100;
-                        else if (text.startsWith(searchLower)) score = 90;
-                        else if (text.includes(searchLower)) score = 70;
-                        
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestMatch = it;
-                        }
-                    }
-                    
-                    if (bestMatch && bestScore >= 70) {
-                        item = bestMatch;
-                        console.log('[Sync] ✓ Fuzzy match:', item.get_text());
-                    }
-                }
-                
-                if (!item) {
-                    console.error('[Sync] ❌ No match found');
-                    window.postMessage({ type: 'SYNC_COMPLETE', id: '${syncId}' }, '*');
-                    return;
-                }
-                
-                // Select item
-                const targetValue = item.get_value();
-                const targetText = item.get_text();
-                
-                // Click item element (most reliable)
-                const itemElement = item.get_element();
-                if (itemElement) {
-                    itemElement.click();
-                    await wait(200);
-                }
-                
-                // API selection
-                combo.trackChanges();
-                item.select();
-                combo.set_value(targetValue);
-                combo.set_text(targetText);
-                combo.commitChanges();
-                
-                // Force DOM
-                if (valueEl) valueEl.value = targetValue;
-                if (inputEl) inputEl.value = targetText;
-                
-                if (combo.hideDropDown) combo.hideDropDown();
-                await wait(200);
-                
-                if (inputEl) inputEl.blur();
-                await wait(400);
-                
-                console.log('[Sync] ✅ Selection complete:', targetText);
-            }
-            // ========== PATH B: REGULAR SELECT/INPUT ==========
-            else {
-                console.log('[Sync] Using standard field method...');
-                
-                if (el.tagName === 'SELECT') {
-                    el.value = val;
-                    if (el.value !== String(val)) {
-                        const option = Array.from(el.options).find(opt =>
-                            opt.value === val ||
-                            opt.text.trim().toLowerCase() === String(val).trim().toLowerCase()
-                        );
-                        if (option) el.value = option.value;
-                    }
-                } else {
-                    el.value = val;
-                }
-                
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-                el.dispatchEvent(new Event('change', { bubbles: true }));
-                el.dispatchEvent(new Event('blur', { bubbles: true }));
-                
-                console.log('[Sync] ✅ Standard field set');
-            }
+                    const generateFuzzy = (id) => {
+                        if (!id) return [];
+                        const variations = [id];
+                        const prefixes = ['ctl00', 'ctl100', 'ct100', 'ct101', 'ct110'];
+                        prefixes.forEach(p1 => {
+                            prefixes.forEach(p2 => {
+                                if (id.includes(p1)) variations.push(id.replace(p1, p2));
+                            });
+                        });
+                        variations.push(id.replace(/ctl?1?\d\d_/, ''));
+                        return [...new Set(variations)];
+                    };
 
-            // ========== FIX: Strict Mode Safe PostBack ==========
-            // Only trigger for _ddlGroup fields (cascading dropdowns)
-            if (selector.includes('_ddlGroup')) {
-                const fieldId = el ? el.id : baseId;
-                
-                await wait(1000);
-                console.log('[Sync] Triggering PostBack for:', fieldId);
-                
-                // Use setTimeout to escape strict mode context
-                setTimeout(() => {
-                    try {
-                        if (typeof __doPostBack === 'function') {
-                            __doPostBack(fieldId, '');
-                        } else {
-                            console.warn('[Sync] __doPostBack not available');
+                    let possibleIds = [
+                        ...generateFuzzy(baseId),
+                        ...generateFuzzy(cleanId),
+                        ...generateFuzzy(el.id),
+                        ...generateFuzzy(el.id.replace('_Input', '').replace('_Value', ''))
+                    ];
+                    possibleIds = [...new Set(possibleIds)];
+                    
+                    // Strategy 1: Standard $find
+                    for (let attempt = 0; attempt < 3; attempt++) {
+                        for (const pid of possibleIds) {
+                            combo = $find(pid);
+                            if (combo && (combo.get_items || combo.set_value)) break;
                         }
-                    } catch (e) {
-                        console.warn('[Sync] PostBack error (non-critical):', e.message);
+                        if (combo && (combo.get_items || combo.set_value)) break;
+                        await wait(200);
                     }
-                }, 100);
+                    
+                    if (combo && (typeof combo.get_items === 'function' || typeof combo.set_value === 'function')) {
+                        isTelerikCombo = true;
+                    }
+                }
+
+                console.log('[Sync] Field:', selector, ' (ID:', el.id, ')');
                 
-                // Wait for postback to complete
-                await wait(2000);
+                // ========== PATH A: DATE PICKER ==========
+                if (typeof $find !== 'undefined' && '${key}'.includes('Date')) {
+                    const datePicker = $find(baseId) || $find(el.id.replace('_dateInput', ''));
+                    if (datePicker && datePicker.set_selectedDate) {
+                        console.log('[Sync] Detected Telerik DatePicker. Setting date:', val);
+                        const parts = val.split('/');
+                        if (parts.length === 3) {
+                            const d = new Date(parts[2], parts[1]-1, parts[0]);
+                            datePicker.set_selectedDate(d);
+                        }
+                    }
+                }
+
+                // ========== PATH B: TELERIK COMBOBOX (RETRY LOOP) ==========
+                if (isTelerikCombo && combo) {
+                    console.log('[Sync] Using Telerik method with RETRY...');
+                    
+                    const setTelerik = async () => {
+                        const comboId = combo.get_id();
+                        const inputEl = document.getElementById(comboId + '_Input');
+                        
+                        combo.clearSelection();
+                        if (inputEl) {
+                            inputEl.focus();
+                            inputEl.value = val;
+                        }
+                        
+                        // Match Item
+                        const items = combo.get_items();
+                        let item = combo.findItemByText(val) || combo.findItemByValue(val);
+                        
+                        if (!item && items.get_count() > 0) {
+                            for(let i=0; i<items.get_count(); i++) {
+                                let it = items.getItem(i);
+                                if (it.get_text().includes(val)) { item = it; break; }
+                            }
+                        }
+
+                        if (item) {
+                            item.select();
+                            combo.set_value(item.get_value());
+                            combo.set_text(item.get_text());
+                            return true;
+                        } 
+                        return false;
+                    };
+
+                    // RETRY LOGIC (3 Attempts)
+                    let success = false;
+                    for(let i=0; i<3; i++) {
+                        success = await setTelerik();
+                        if(success && combo.get_value()) break;
+                        
+                        console.warn('[Sync] Telerik set failed/empty. Retrying...', i+1);
+                        await wait(800 + (i*500)); // Progressive wait
+                    }
+                    
+                    if (!success) {
+                        console.error('[Sync] Failed to set Telerik value after retries.');
+                        combo.set_text(val); // Last resort
+                    }
+                }
+                // ========== PATH C: REGULAR SELECT/INPUT ==========
+                else {
+                    console.log('[Sync] Using standard field method...');
+                    if (el.tagName === 'SELECT') {
+                        el.value = val;
+                        if (el.value !== String(val)) {
+                            const options = Array.from(el.options);
+                            const bestOption = options.find(opt => opt.value === String(val) || opt.text.includes(String(val)));
+                            if (bestOption) el.value = bestOption.value;
+                        }
+                    } else {
+                        el.value = val;
+                    }
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                // ========== FIX: Strict Mode Safe PostBack ==========
+                const isCascading = ${JSON.stringify(Object.keys(cascadingFields))}.includes('${key}');
+                
+                if (isCascading || selector.includes('_ddlGroup')) {
+                    const fieldId = el ? el.id : baseId;
+                    await wait(800);
+                    console.log('[Sync] Triggering PostBack for:', fieldId);
+                    
+                    setTimeout(() => {
+                        try { if (typeof __doPostBack === 'function') __doPostBack(fieldId, ''); } catch(e2) {}
+                    }, 100);
+                    
+                    await wait(2500);
+                }
+                
+            } catch (e) {
+                console.error("[Sync] Error:", e.message);
             }
             
-        } catch (e) {
-            console.error("[Sync] Error:", e.message);
-        }
-        
-        window.postMessage({ type: 'SYNC_COMPLETE', id: '${syncId}' }, '*');
-    })();
-`;
+            window.postMessage({ type: 'SYNC_COMPLETE', id: '${syncId}' }, '*');
+        })();
+    `;
             const scriptEl = document.createElement('script');
             scriptEl.textContent = syncScript;
             (document.head || document.documentElement).appendChild(scriptEl);
@@ -1206,18 +1248,12 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
     };
 
     try {
-        let keys = fieldMap.__fieldOrder || Object.keys(fieldMap);
-        keys = keys.filter(k => k !== '__fieldOrder');
+        const keys = fieldMap.__fieldOrder || Object.keys(fieldMap);
+        const filteredKeys = keys.filter(k => k !== '__fieldOrder');
 
         let stats = { success: 0, failed: 0, skipped: 0 };
 
-        const cascadingFields = {
-            'Registered_Country': ['Registered_State', 'Registered_City', 'Registered_Postcode'],
-            'Registered_State': ['Registered_City', 'Registered_Postcode'],
-            'Business_Country': ['Business_State', 'Business_City', 'Business_Postcode'],
-            'Business_State': ['Business_City', 'Business_Postcode']
-        };
-        for (let key of keys) {
+        for (let key of filteredKeys) {
             const sel = fieldMap[key];
             const val = data[key];
 
@@ -1228,8 +1264,8 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
                 continue;
             }
 
-            const res = await setFieldValue(sel, val);
-            // setFieldValue returns: true (success), false (not found), 'skipped' (disabled)
+            const res = await setFieldValue(sel, val, key);
+
             if (res === true) {
                 stats.success++;
                 console.log(`[Fill] Successfully set ${key}`);
