@@ -1,0 +1,26 @@
+{
+  "name": "le-filler-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicholasTangYS/LE-filler-extension.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NicholasTangYS/LE-filler-extension/issues"
+  },
+  "homepage": "https://github.com/NicholasTangYS/LE-filler-extension#readme",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  }
+}
