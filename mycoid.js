@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     actionBtn.addEventListener('click', () => {
         if (!isRunning) runFullAutomation();
-        else if (isRunning && !isPaused) stopAutomation();
+        else if (isRunning && !isPaused) pauseAutomation();
         else if (isRunning && isPaused) resumeAutomation();
     });
 
@@ -458,6 +458,14 @@ document.addEventListener('DOMContentLoaded', function () {
         isPaused = false;
         updateStatus("Resuming...", "blue");
         updateBtnState('RUNNING');
+    }
+
+    function pauseAutomation() {
+        if (!isRunning) return;
+        isPaused = true;
+        updateStatus("PAUSED: Click Resume to continue.", "orange");
+        updateBtnState('PAUSED');
+        showNotification("Automation Paused", "Manual pause triggered. Click Resume to continue.");
     }
 
     function updateBtnState(state) {
@@ -605,6 +613,8 @@ document.addEventListener('DOMContentLoaded', function () {
             initInternalChecklist(SITE_CONFIG.pageSequence, startIndex, currentChecklistStatuses);
 
             for (let i = startIndex; i < SITE_CONFIG.pageSequence.length; i++) {
+                // Honor pause requests
+                while (isPaused && isRunning) await new Promise(r => setTimeout(r, 500));
                 if (!isRunning) throw new Error("Stopped by user.");
                 const pageName = SITE_CONFIG.pageSequence[i];
                 const mapping = SITE_CONFIG.mappings[pageName];
@@ -1152,6 +1162,9 @@ async function fillPageWithData(data, fieldMap, rowIndex, fieldRules) {
                             const d = new Date(parts[2], parts[1]-1, parts[0]);
                             datePicker.set_selectedDate(d);
                         }
+                        // DatePicker doesn't need PostBack, so skip to end
+                        window.postMessage({ type: 'SYNC_COMPLETE', id: '${syncId}' }, '*');
+                        return;
                     }
                 }
 

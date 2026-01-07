@@ -90,6 +90,7 @@ const CONTACT_DETAIL_MAP = {
     MOBILE: "PHONE",
     OFFICE: "UF_CRM_CONTACT_OFFICE_PHONE",
     FAX: "UF_CRM_CONTACT_FAX",
+    DOB: "BIRTHDATE",
     COMPLIANCE_CHECKBOX: "UF_CRM_CONTACT_COMPLIANCE",
     ALSO_MEMBER_CHECKBOX: "UF_CRM_CONTACT_ALSO_MEMBER"
 };
@@ -210,6 +211,14 @@ function processValue(path, value) {
         return String(value || "").trim().toUpperCase();
     }
 
+    // 7. Date of Birth Formatting (YYYY-MM-DD -> DD/MM/YYYY)
+    if (path.toLowerCase().endsWith('dob')) {
+        if (value && String(value).includes('-')) {
+            const [y, m, d] = String(value).split('T')[0].split('-');
+            return `${d}/${m}/${y}`;
+        }
+    }
+
     return value;
 }
 
@@ -218,10 +227,21 @@ async function fetchAndMapCorporateShareholder(companyId, shares = null) {
 
     try {
         const companyData = await callBitrix('crm.company.get', { id: companyId });
+        const name = (companyData.TITLE || "").toUpperCase().trim();
+        let memberType = "ROC"; // Default to ROC
+
+        if (name.endsWith("SDN BHD") || name.endsWith("SDN. BHD.")) {
+            memberType = "ROC";
+        } else if (name.endsWith("PTE LTD") || name.endsWith("PTE. LTD.") || name.endsWith("INC") || name.endsWith("INC.")) {
+            memberType = "FOREIGN COMPANY";
+        } else if (name.endsWith("PLT")) {
+            memberType = "LLP";
+        }
+
         const mappedMember = {
             "Member_Promoter_Type": "BODY CORPORATE",
             "Member_New_Or_Existing": "NEW",
-            "Member_Type": "ROC", // Default to ROC
+            "Member_Type": memberType,
             "Member_Price_Per_Share": "1.00",
             "Member_Number_Of_Shares": (shares !== null && shares !== undefined && shares !== "") ? String(shares) : "0",
             "Member_Class_Of_Shares": "Ordinary",
@@ -341,9 +361,15 @@ async function fetchAndMapContactDetails(contactId, rolePrefix, forceAlsoMember 
         if (finalIdType) mappedContact[`${rolePrefix}_ID_Type`] = finalIdType;
 
         setMapped(`${rolePrefix}_NRIC`, CONTACT_DETAIL_MAP.NRIC);
+        setMapped(`${rolePrefix}_DOB`, CONTACT_DETAIL_MAP.DOB);
         setMapped(`${rolePrefix}_Nationality`, CONTACT_DETAIL_MAP.NATIONALITY);
         setMapped(`${rolePrefix}_Gender`, CONTACT_DETAIL_MAP.GENDER);
-        setMapped(`${rolePrefix}_Race`, CONTACT_DETAIL_MAP.RACE);
+
+        if (finalIdType === 'Passport') {
+            mappedContact[`${rolePrefix}_Race`] = 'FOREIGNER';
+        } else {
+            setMapped(`${rolePrefix}_Race`, CONTACT_DETAIL_MAP.RACE);
+        }
 
         setMapped(`${rolePrefix}_Address_Line1`, CONTACT_DETAIL_MAP.ADDRESS_LINE1);
         setMapped(`${rolePrefix}_Address_Line2`, CONTACT_DETAIL_MAP.ADDRESS_LINE2);
@@ -360,13 +386,7 @@ async function fetchAndMapContactDetails(contactId, rolePrefix, forceAlsoMember 
         mappedContact[`${rolePrefix}_Compliance_Checkbox`] = true;
 
         if (rolePrefix === "Director") {
-            // Priority 1: Force true if they appear in both Deal fields
-            // Priority 2: Use Bitrix field 'Y'/'N'
-            if (forceAlsoMember === true) {
-                mappedContact[`${rolePrefix}_Also_Member_Checkbox`] = true;
-            } else if (contactData[CONTACT_DETAIL_MAP.ALSO_MEMBER_CHECKBOX] !== undefined) {
-                mappedContact[`${rolePrefix}_Also_Member_Checkbox`] = (contactData[CONTACT_DETAIL_MAP.ALSO_MEMBER_CHECKBOX] === 'Y');
-            }
+            mappedContact[`${rolePrefix}_Also_Member_Checkbox`] = false;
         }
 
         if (rolePrefix === "Member") {
@@ -533,17 +553,17 @@ app.post('/api/get-full-deal-json', async (req, res) => {
         ];
 
         // --- STEP 5: Add Comment to Bitrix ---
-        // const jsonString = JSON.stringify(finalJson, null, 4);
+        const jsonString = JSON.stringify(finalJson, null, 4);
 
-        //const commentId = await callBitrix('crm.timeline.comment.add', {
-        //     fields: {
-        //        ENTITY_ID: dealIdNum,
-        //         ENTITY_TYPE: 'deal',
-        //           COMMENT: jsonString // Raw JSON only as requested
-        //    }
-        // });
+        const commentId = await callBitrix('crm.timeline.comment.add', {
+            fields: {
+                ENTITY_ID: dealIdNum,
+                ENTITY_TYPE: 'deal',
+                COMMENT: jsonString // Raw JSON only as requested
+            }
+        });
 
-        // console.log(`✅ Success! JSON logged to Bitrix Timeline. Comment ID: ${commentId}`);
+        console.log(`✅ Success! JSON logged to Bitrix Timeline. Comment ID: ${commentId}`);
 
 
         res.json({

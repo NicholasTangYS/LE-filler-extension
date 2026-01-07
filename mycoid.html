@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Automation Suite</title>
+    <!-- Inter Font for professional feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            /* Navy Blue */
+            --primary-accent: #64369F;
+            /* Professional Purple */
+            --bg-app: #F3F4F6;
+            --bg-card: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --success: #059669;
+            --error: #DC2626;
+            --warning: #D97706;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 400px;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        /* HEADER */
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .header-icon {
+            background: rgba(255, 255, 255, 0.2);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-title h1 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .header-title p {
+            font-size: 11px;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            padding: 20px;
+        }
+
+        /* CARD COMPONENT */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* FORM ELEMENTS */
+        .input-group {
+            margin-bottom: 0;
+        }
+
+        textarea,
+        select {
+            width: 100%;
+            background: #F9FAFB;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        textarea:focus,
+        select:focus {
+            border-color: var(--primary-accent);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(100, 54, 159, 0.1);
+        }
+
+        /* BUTTONS */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e40af;
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .btn-outline-danger {
+            background: white;
+            color: var(--error);
+            border: 1px solid var(--error);
+            margin-top: 10px;
+            display: none;
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--error);
+            color: white;
+        }
+
+        /* STATUS/MESSAGES */
+        #msg {
+            margin-top: 16px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            color: #1E40AF;
+        }
+
+        #msg:empty {
+            display: none;
+        }
+
+        /* PROGRESS UI */
+        .progress-card {
+            border-top: 3px solid var(--primary-accent);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .progress-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-pct {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-accent);
+        }
+
+        .progress-steps {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .progress-bar-container {
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary-accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* LOG/CHECKLIST */
+        .checklist {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-dot {
+            margin-top: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-pending {
+            background-color: #D1D5DB;
+        }
+
+        .status-processing {
+            background-color: var(--warning);
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-success {
+            background-color: var(--success);
+        }
+
+        .status-failed {
+            background-color: var(--error);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-icon">🛡️</div>
+        <div class="header-title">
+            <h1>Enterprise Automation</h1>
+            <p>SSM Corporate Filing Suite</p>
+        </div>
+    </div>
+
+    <div class="main">
+        <!-- Input Card -->
+        <div class="card">
+            <h2 class="section-title"><span>📂</span> Configuration</h2>
+            <div class="input-group">
+                <textarea id="jsonData" placeholder="Paste automation JSON here..."></textarea>
+            </div>
+        </div>
+
+        <!-- Options Card -->
+        <div class="card">
+            <h2 class="section-title"><span>🎯</span> Entry Point</h2>
+            <select id="startStep"></select>
+        </div>
+
+        <!-- Actions -->
+        <button id="actionBtn" class="btn btn-primary">
+            ▶ START AUTOMATION
+        </button>
+        <button id="stopBtn" class="btn btn-outline-danger">
+            ⏹ STOP
+        </button>
+
+        <div id="msg"></div>
+
+        <!-- Progress Card -->
+        <div id="progressContainer" class="card progress-card" style="display: none;">
+            <div class="progress-header">
+                <div class="progress-info">
+                    <span class="progress-label">BATCH STATUS</span>
+                    <span id="progressText" class="progress-pct">0%</span>
+                </div>
+                <div id="stepCounter" class="progress-steps">Processing...</div>
+            </div>
+
+            <div class="progress-bar-container">
+                <div id="progressBarFill" class="progress-bar-fill"></div>
+            </div>
+
+            <div id="checklistContainer" class="checklist">
+                <!-- Automation items will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Entry -->
+    <script src="mycoid.js"></script>
+</body>
+
+</html>
