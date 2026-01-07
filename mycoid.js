@@ -13,7 +13,7 @@ const SSM_MAPPINGS = {
             "Clarify_Single_Letters", "Clarify_Not_BM_EN",
             "Clarify_Proper_Name", "Clarify_Similar_Name", "Clarify_Trademark", "Clarify_Other",
             "Business_Description",
-            "Registered_Address_1", "Registered_Country", "Registered_State", "Registered_City", "Registered_Postcode",
+            "Registered_Address_1", "Registered_Address_2", "Registered_Address_3", "Registered_Country", "Registered_State", "Registered_City", "Registered_Postcode",
             "Email", "Office_Number", "Fax_Number",
             "Same_As_Above",
             "Business_Address_1", "Business_Address_2", "Business_Address_3",
@@ -29,6 +29,8 @@ const SSM_MAPPINGS = {
             "Clarify_Other": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_c8dff08f-d7da-4963-bb45-3dd3e1820aa8",
             "Business_Description": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_773f3780-7707-464a-a1f9-989d74f82ec6",
             "Registered_Address_1": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_16e89a05-304d-4de7-832b-7ebab4229f9d",
+            "Registered_Address_2": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_3bd53e25-cc8b-4b18-bd90-9e3cfd42cc61",
+            "Registered_Address_3": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_1eca5892-c8dc-4b9c-aa42-6ea35c651fd2",
             "Registered_Country": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_3c27c86f-5c54-444f-a96a-056a05cf05f4_ddlGroup",
             "Registered_State": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_a47e086f-b648-45aa-b296-8ef74209eb59_ddlGroup",
             "Registered_City": "#ctl00_ContentPlaceHolder1_FormEngine1_mf_2176b5c2-4f01-4bbb-b3ab-7042bb3d0d06_ddlGroup",
@@ -388,7 +390,7 @@ const SITE_CONFIG = {
     },
 
     enableSmartJump: true,
-    pageSequence: ['Incorp_Form', 'Business_Code_Form', 'Members_Form',],
+    pageSequence: ['Directors_Form',],
     mappings: SSM_MAPPINGS
 };
 

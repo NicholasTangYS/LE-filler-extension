@@ -12,6 +12,7 @@ const BITRIX_WEBHOOK_URL = process.env.BITRIX24_WEBHOOK || process.env.BITRIX_WE
 // ==========================================
 
 const DEAL_ID_LINK_FIELDS = {
+
     COMPANY_ID: "COMPANY_ID",
     DIRECTOR_IDS: [
         "UF_CRM_1614063941", // Director 1 Contact ID
@@ -26,6 +27,20 @@ const DEAL_ID_LINK_FIELDS = {
         "UF_CRM_1614065107", // Shareholder 3 Contact ID
         "UF_CRM_1614065119", // Shareholder 4 Contact ID
         "UF_CRM_1614065131"  // Shareholder 5 Contact ID
+    ],
+    SHAREHOLDER_SHARES: [
+        "UF_CRM_1614065148", // No. of share (1)
+        "UF_CRM_1614065159", // No. of share (2)
+        "UF_CRM_1614065174", // No. of share (3)
+        "UF_CRM_1614065188", // No. of share (4)
+        "UF_CRM_1614065200"  // No. of share (5)
+    ],
+    CORPORATE_SHAREHOLDER_IDS: [
+        "UF_CRM_1620625155", // Corporate Shareholder 1
+        "UF_CRM_1620625173", // Corporate Shareholder 2
+        "UF_CRM_1620625192", // Corporate Shareholder 3
+        "UF_CRM_1620625211", // Corporate Shareholder 4
+        "UF_CRM_1620625269"  // Corporate Shareholder 5
     ]
 };
 
@@ -42,6 +57,7 @@ const DIRECT_DEAL_MAP = {
     "super_form_data.business_codes.2.Business_Code": "UF_CRM_1615172535785",
 
     // Moving Business Address back to Deal as confirmed by Step 55
+    "Business_Description": "UF_CRM_1611194608807",
     "Business_Address_1": "UF_CRM_1619746187397",
     "Business_Address_2": "UF_CRM_1619746194929",
     "Business_Country": "UF_CRM_BIZ_COUNTRY",
@@ -53,18 +69,8 @@ const DIRECT_DEAL_MAP = {
 };
 
 const COMPANY_MAP = {
-    "Business_Description": "COMMENTS",
-    "Email": "EMAIL",
-    "Office_Number": "PHONE",
-    "Fax_Number": "FAX",
-    "Same_As_Above": "UF_CRM_COMP_SAME_ADDR_FLAG",
-
-    "Registered_Address_1": "UF_CRM_1581838992248",
-    "Registered_Address_2": "UF_CRM_1581839002479",
-    "Registered_Country": "ADDRESS_COUNTRY",
-    "Registered_State": "ADDRESS_REGION",
-    "Registered_City": "UF_CRM_1581839032051",
-    "Registered_Postcode": "UF_CRM_1581839059588",
+    "Business_Description": "UF_CRM_1611194608807" // Still get this from deal
+    // All Registered Address fields and Same_As_Above are now hardcoded in finalJson
 };
 
 const CONTACT_DETAIL_MAP = {
@@ -92,6 +98,24 @@ const CONTACT_DETAIL_MAP = {
 // 2. HELPER FUNCTIONS
 // ==========================================
 
+const REGISTERED_STATE_MAP = {
+    "45": "KEDAH",
+    "47": "PERLIS",
+    "49": "PULAU PINANG",
+    "51": "PERAK",
+    "53": "KELANTAN",
+    "55": "TERENGGANU",
+    "57": "SELANGOR",
+    "59": "NEGERI SEMBILAN",
+    "61": "MELAKA",
+    "63": "PAHANG",
+    "65": "SABAH",
+    "67": "SARAWAK",
+    "183": "JOHOR",
+    "1371": "W.P. LABUAN",
+    "2185": "W.P. KUALA LUMPUR"
+};
+
 function setNestedValue(obj, path, value) {
     const keys = path.split('.');
     let current = obj;
@@ -112,51 +136,137 @@ function setNestedValue(obj, path, value) {
 }
 
 function processValue(path, value) {
-    if (value === undefined || value === null) {
-        // Default Country/Nationality to Malaysia even if null/undefined
-        if (path.toLowerCase().includes('country') || path.toLowerCase().includes('nationality')) {
-            return "Malaysia";
+    // 1. Handle Countries and Nationalities (Standardizing to MALAYSIA)
+    const lowerPath = path.toLowerCase();
+    if (lowerPath.includes('country') || lowerPath.includes('nationality')) {
+        const valStr = value ? String(value).trim().toLowerCase() : "";
+
+        // Standardize variations of Malaysia/Malaysian and empty/null/NA markers to "MALAYSIA"
+        if (!value ||
+            valStr === "" ||
+            valStr === "null" ||
+            valStr === "n/a" ||
+            valStr === "none" ||
+            valStr.startsWith('malay')
+        ) {
+            return "MALAYSIA";
         }
+    }
+
+    if (value === undefined || value === null) {
         return value;
     }
 
-    // 1. Business Code Padding: 4 digits -> 5 digits with leading '0'
+    // 2. Business Code Extraction & Padding: Extract only the code and pad to 5 digits
     if (path.endsWith('Business_Code')) {
-        let valStr = String(value).trim();
-        console.log(`[Padding Check] Path: ${path}, Value: "${valStr}"`);
+        let valStr = String(value || "").trim();
+        // Extract only the code part if there's a colon
         if (valStr.includes(':')) {
-            let parts = valStr.split(':');
-            let code = parts[0].trim();
-            if (code.length === 4 && /^\d+$/.test(code)) {
-                const newValue = `0${code} : ${parts.slice(1).join(':').trim()}`;
-                console.log(`   - Padded with colon: "${newValue}"`);
-                return newValue;
-            }
-        } else if (valStr.length === 4 && /^\d+$/.test(valStr)) {
-            const newValue = `0${valStr}`;
-            console.log(`   - Padded raw: "${newValue}"`);
-            return newValue;
+            valStr = valStr.split(':')[0].trim();
+        }
+
+        // Pad 4 digits to 5 digits
+        if (valStr.length === 4 && /^\d+$/.test(valStr)) {
+            valStr = `0${valStr}`;
+        }
+
+        console.log(`[Business Code Mapping] Path: ${path}, Final Code: "${valStr}"`);
+        return valStr;
+    }
+
+    // 3. Handle NRIC Dash Stripping (900101-01-1234 -> 900101011234)
+    if (path.toLowerCase().endsWith('nric')) {
+        const valStr = String(value || "").trim();
+        // Check if it matches XXXXXX-XX-XXXX
+        if (/^\d{6}-\d{2}-\d{4}$/.test(valStr)) {
+            console.log(`[NRIC Stripping] Stripping dashes from: "${valStr}"`);
+            return valStr.replace(/-/g, '');
         }
     }
 
-    // 2. Default Country/Nationality to Malaysia
-    if (path.toLowerCase().includes('country') || path.toLowerCase().includes('nationality')) {
-        if (!value || String(value).trim() === "" || String(value).toLowerCase().includes('null')) {
-            return "Malaysia";
-        }
-    }
-
-    // 3. Director ID Type Logic: ic if NRIC, passport if Passport
+    // 4. Director ID Type Logic: NRIC or Passport
     if (path.endsWith('_ID_Type') || path.endsWith('ID_Type')) {
-        const valStr = String(value).toLowerCase();
-        if (valStr.includes('nric') || valStr.includes('ic')) return 'ic';
-        if (valStr.includes('passport')) return 'passport';
+        const valStr = String(value || "").toLowerCase();
+        if (valStr.includes('nric') || valStr.includes('ic')) return 'NRIC';
+        if (valStr.includes('passport')) return 'Passport';
+    }
 
-        // Fallback: If we don't have a value but this is a mapping for ID Type, 
-        // return null so it can be handled elsewhere or just ignored
+    // 5. State Standardization (incl. KL conversion and ID lookup)
+    if (path.toLowerCase().endsWith('state')) {
+        let valStr = String(value || "").trim();
+        // Check if it's an ID from REGISTERED_STATE_MAP
+        if (REGISTERED_STATE_MAP[valStr]) {
+            valStr = REGISTERED_STATE_MAP[valStr];
+        }
+        valStr = valStr.toUpperCase();
+        if (valStr === "KL" || valStr === "KUALA LUMPUR") {
+            return "W.P. KUALA LUMPUR";
+        }
+        return valStr;
+    }
+
+    // 6. City Standardization (Uppercase only)
+    if (path.toLowerCase().endsWith('city')) {
+        return String(value || "").trim().toUpperCase();
     }
 
     return value;
+}
+
+async function fetchAndMapCorporateShareholder(companyId, shares = null) {
+    if (!companyId) return null;
+
+    try {
+        const companyData = await callBitrix('crm.company.get', { id: companyId });
+        const mappedMember = {
+            "Member_Promoter_Type": "BODY CORPORATE",
+            "Member_New_Or_Existing": "NEW",
+            "Member_Type": "ROC", // Default to ROC
+            "Member_Price_Per_Share": "1.00",
+            "Member_Number_Of_Shares": (shares !== null && shares !== undefined && shares !== "") ? String(shares) : "0",
+            "Member_Class_Of_Shares": "Ordinary",
+            "Member_Corporate_Name": companyData.TITLE || "",
+            "Member_Company_Registration_No": companyData.UF_CRM_1585708913204 || "",
+            "Member_Place_of_incorporation": "MALAYSIA",
+
+            "Member_Corp_Address_Line1": companyData.ADDRESS || "",
+            "Member_Corp_Address_Line2": companyData.ADDRESS_2 || "",
+            "Member_Corp_Country": processValue('Member_Corp_Country', companyData.ADDRESS_COUNTRY || "MALAYSIA"),
+            "Member_Corp_State": processValue('Member_Corp_State', companyData.ADDRESS_REGION || ""),
+            "Member_Corp_City": processValue('Member_Corp_City', companyData.ADDRESS_CITY || ""),
+            "Member_Corp_Postcode": companyData.ADDRESS_POSTAL_CODE || "",
+
+            "Member_Email": getMultiFieldValue(companyData.EMAIL),
+            "Member_Mobile": getMultiFieldValue(companyData.PHONE),
+            "Member_Office": getMultiFieldValue(companyData.PHONE),
+            "Member_Fax": getMultiFieldValue(companyData.FAX),
+            "Member_Compliance_Checkbox": true,
+            "Member_Rep_Designation": "Mr" // Default as requested
+        };
+
+        // --- Fetch Representative (Contact ID from Company Field) ---
+        const rawRepId = companyData.UF_CRM_1626401801;
+        const repId = extractId(rawRepId);
+
+        if (repId) {
+            try {
+                console.log(`      * Fetching Corporate Rep Contact ID: ${repId} (from Company field UF_CRM_1626401801)`);
+                const repData = await callBitrix('crm.contact.get', { id: repId });
+                mappedMember.Member_Rep_Name = `${repData.NAME} ${repData.LAST_NAME || ''}`.trim();
+
+                // Use processValue (id logic / dash stripping)
+                const rawID = repData[CONTACT_DETAIL_MAP.NRIC] || "";
+                mappedMember.Member_Rep_NRIC = processValue('Member_Rep_NRIC', rawID);
+            } catch (err) {
+                console.warn(`      ! Could not fetch Corporate Rep Contact ID ${repId}: ${err.message}`);
+            }
+        }
+
+        return mappedMember;
+    } catch (error) {
+        console.warn(`Could not fetch or map Corporate Shareholder Company ID ${companyId}: ${error.message}`);
+        return null;
+    }
 }
 
 async function callBitrix(method, params) {
@@ -183,7 +293,16 @@ function getMultiFieldValue(multiFieldArray) {
     return (Array.isArray(multiFieldArray) && multiFieldArray.length > 0) ? multiFieldArray[0].VALUE : "";
 }
 
-async function fetchAndMapContactDetails(contactId, rolePrefix, forceAlsoMember = false) {
+function extractId(val) {
+    if (val === null || val === undefined || val === "" || (Array.isArray(val) && val.length === 0)) return null;
+    let idVal = Array.isArray(val) ? val[0] : val;
+    const valStr = String(idVal).trim();
+    // Handles IDs like "123", "C_123", "CO_123", ["123"]
+    const match = valStr.match(/\d+/);
+    return match ? Number(match[0]) : null;
+}
+
+async function fetchAndMapContactDetails(contactId, rolePrefix, forceAlsoMember = false, shares = null) {
     if (!contactId) return null;
 
     try {
@@ -208,10 +327,14 @@ async function fetchAndMapContactDetails(contactId, rolePrefix, forceAlsoMember 
         // Deriving ID Type fallback if CONTACT_DETAIL_MAP.ID_TYPE is missing or value is empty
         const idTypeField = CONTACT_DETAIL_MAP.ID_TYPE;
         let idTypeVal = idTypeField ? contactData[idTypeField] : null;
-        if (!idTypeVal && contactData[CONTACT_DETAIL_MAP.NRIC]) {
-            // If NRIC looks like an IC (contains only digits, spaces, or dashes), assume 'ic'
-            const nricVal = String(contactData[CONTACT_DETAIL_MAP.NRIC]);
-            if (/^[\d-\s]+$/.test(nricVal)) idTypeVal = 'nric';
+
+        // User Logic: if NRIC value is xxxxxx-xx-xxxx, idType is NRIC, else Passport
+        const nricVal = String(contactData[CONTACT_DETAIL_MAP.NRIC] || "");
+        if (/^\d{6}-\d{2}-\d{4}$/.test(nricVal.trim())) {
+            idTypeVal = 'NRIC';
+        } else if (nricVal.trim() !== "") {
+            // If it has a value but doesn't match the NRIC pattern, assume Passport
+            idTypeVal = 'Passport';
         }
 
         const finalIdType = processValue(`${rolePrefix}_ID_Type`, idTypeVal);
@@ -234,9 +357,7 @@ async function fetchAndMapContactDetails(contactId, rolePrefix, forceAlsoMember 
         setMapped(`${rolePrefix}_Office`, CONTACT_DETAIL_MAP.OFFICE, true);
         setMapped(`${rolePrefix}_Fax`, CONTACT_DETAIL_MAP.FAX, true);
 
-        if (contactData[CONTACT_DETAIL_MAP.COMPLIANCE_CHECKBOX] !== undefined) {
-            mappedContact[`${rolePrefix}_Compliance_Checkbox`] = (contactData[CONTACT_DETAIL_MAP.COMPLIANCE_CHECKBOX] === 'Y');
-        }
+        mappedContact[`${rolePrefix}_Compliance_Checkbox`] = true;
 
         if (rolePrefix === "Director") {
             // Priority 1: Force true if they appear in both Deal fields
@@ -252,8 +373,8 @@ async function fetchAndMapContactDetails(contactId, rolePrefix, forceAlsoMember 
             mappedContact["Member_Promoter_Type"] = "INDIVIDUAL";
             mappedContact["Member_New_Or_Existing"] = "NEW";
             mappedContact["Member_Price_Per_Share"] = "1.00";
-            mappedContact["Member_Number_Of_Shares"] = "0";
-            mappedContact["Member_Class_Of_Shares"] = "ORDINARY";
+            mappedContact["Member_Number_Of_Shares"] = (shares !== null && shares !== undefined && shares !== "") ? String(shares) : "0";
+            mappedContact["Member_Class_Of_Shares"] = "Ordinary";
         }
 
         return mappedContact;
@@ -282,7 +403,19 @@ app.post('/api/get-full-deal-json', async (req, res) => {
                 "directors": [],
                 "members_shareholders": [],
                 "information_to_agency": {}
-            }
+            },
+            // Hardcoded Registered Address Fields from Image
+            "Registered_Address_1": "38, 3RD FLOOR,",
+            "Registered_Address_2": "JALAN RADIN ANUM,",
+            "Registered_Address_3": "BANDAR BARU SRI PETALING",
+            "Registered_Country": "MALAYSIA",
+            "Registered_State": "W.P. KUALA LUMPUR",
+            "Registered_City": "KUALA LUMPUR",
+            "Registered_Postcode": "57000",
+            "Email": "cosec.my@ezco.co",
+            "Office_Number": "0386817355",
+            "Fax_Number": "-",
+            "Same_As_Above": false
         };
 
         // --- STEP 1: Fetch Deal Data ---
@@ -335,12 +468,16 @@ app.post('/api/get-full-deal-json', async (req, res) => {
             .filter(id => id && Number(id) > 0)
             .map(id => Number(id));
 
-        // Deduplication Logic:
-        // 1. Common IDs: Contacts in BOTH fields
-        const commonIds = directorIds.filter(id => shareholderIds.includes(id));
-
-        // 2. Shareholder-Only IDs: Contacts NOT in Directors
-        const uniqueShareholderIds = shareholderIds.filter(id => !directorIds.includes(id));
+        // Create a map of Contact ID -> Shares from the deal's shareholder slots
+        const sharesMap = {};
+        DEAL_ID_LINK_FIELDS.SHAREHOLDER_IDS.forEach((field, index) => {
+            const id = Number(dealData[field]);
+            const sharesField = DEAL_ID_LINK_FIELDS.SHAREHOLDER_SHARES[index];
+            const sharesVal = dealData[sharesField];
+            if (id && id > 0) {
+                sharesMap[id] = sharesVal;
+            }
+        });
 
         // --- STEP 2.5: Handle Same_As_Above Fallback ---
         if (finalJson.Same_As_Above === true) {
@@ -355,35 +492,64 @@ app.post('/api/get-full-deal-json', async (req, res) => {
             });
         }
 
-        // Process Directors (Pass forceAlsoMember=true if ID is in commonIds)
+        // --- STEP 5: Process Directors ---
         const directors = await Promise.all(directorIds.map(id =>
-            fetchAndMapContactDetails(id, "Director", commonIds.includes(id))
+            fetchAndMapContactDetails(id, "Director", shareholderIds.includes(id)) // Set checkbox if also a member
         ));
         finalJson.super_form_data.directors = directors.filter(d => d !== null);
 
-        // Process ONLY unique Shareholders
-        const shareholders = await Promise.all(uniqueShareholderIds.map(id =>
-            fetchAndMapContactDetails(id, "Member")
-        ));
-        finalJson.super_form_data.members_shareholders = shareholders.filter(s => s !== null);
+        // --- STEP 6 & 7: Process Shareholders (Individual or Corporate) ---
+        console.log(`   - Processing Shareholder Slots...`);
+        const individualShareholders = [];
+        const corporateShareholders = [];
+
+        for (let i = 0; i < 5; i++) {
+            const rawInd = dealData[DEAL_ID_LINK_FIELDS.SHAREHOLDER_IDS[i]];
+            const rawCorp = dealData[DEAL_ID_LINK_FIELDS.CORPORATE_SHAREHOLDER_IDS[i]];
+            const indId = extractId(rawInd);
+            const corpId = extractId(rawCorp);
+            const shareVal = dealData[DEAL_ID_LINK_FIELDS.SHAREHOLDER_SHARES[i]];
+
+            console.log(`   - Slot ${i + 1}: IndField=${DEAL_ID_LINK_FIELDS.SHAREHOLDER_IDS[i]}, RawInd="${JSON.stringify(rawInd)}", ExtractedInd=${indId}`);
+            console.log(`             CorpField=${DEAL_ID_LINK_FIELDS.CORPORATE_SHAREHOLDER_IDS[i]}, RawCorp="${JSON.stringify(rawCorp)}", ExtractedCorp=${corpId}`);
+
+            if (indId) {
+                console.log(`      + Mapping Individual Shareholder Index ${i} (ID: ${indId})`);
+                const s = await fetchAndMapContactDetails(indId, "Member", false, shareVal);
+                if (s) individualShareholders.push(s);
+            }
+
+            if (corpId) {
+                console.log(`      + Mapping Corporate Shareholder Index ${i} (ID: ${corpId})`);
+                const s = await fetchAndMapCorporateShareholder(corpId, shareVal);
+                if (s) corporateShareholders.push(s);
+            }
+        }
+
+        // Combine both into members_shareholders (Individuals first, then Body Corporates)
+        finalJson.super_form_data.members_shareholders = [
+            ...individualShareholders,
+            ...corporateShareholders
+        ];
 
         // --- STEP 5: Add Comment to Bitrix ---
-        const jsonString = JSON.stringify(finalJson, null, 4);
+        // const jsonString = JSON.stringify(finalJson, null, 4);
 
-        const commentId = await callBitrix('crm.timeline.comment.add', {
-            fields: {
-                ENTITY_ID: dealIdNum,
-                ENTITY_TYPE: 'deal',
-                COMMENT: jsonString // Raw JSON only as requested
-            }
-        });
+        //const commentId = await callBitrix('crm.timeline.comment.add', {
+        //     fields: {
+        //        ENTITY_ID: dealIdNum,
+        //         ENTITY_TYPE: 'deal',
+        //           COMMENT: jsonString // Raw JSON only as requested
+        //    }
+        // });
 
-        console.log(`✅ Success! JSON logged to Bitrix Timeline. Comment ID: ${commentId}`);
+        // console.log(`✅ Success! JSON logged to Bitrix Timeline. Comment ID: ${commentId}`);
+
 
         res.json({
             success: true,
             deal_id: dealIdNum,
-            comment_id: commentId,
+            // comment_id: commentId,
             data_preview: finalJson
         });
 
