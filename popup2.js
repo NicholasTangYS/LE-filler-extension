@@ -431,7 +431,7 @@ const LHDN_MAPPINGS = {
             "TIN": "#MainContent_RptPekongsi_txtNoTINPembayar_0",
             "Type_of_payment_received": "#MainContent_RptPekongsi_ddljenis_bayaran_0",
             "Payment_Related_to": "#MainContent_RptPekongsi_ddlsykt_berkaitan_0",
-            "Amount": "#MainContent_RptPekongsi_txtNamaPembayar_0"
+            "Amount": "#MainContent_RptPekongsi_txtAmaun_0"
         }
     },
 
@@ -644,7 +644,7 @@ const LHDN_MAPPINGS = {
     },
 
     Declaration_Page: {
-        waitForElement: 'input[value="Tandatangan & hantar"]',
+        waitForElement: '#MainContent_btnSign',
         nextButtonSelector: null,
         fields: {}
     }
@@ -686,7 +686,17 @@ const SITE_CONFIG = {
         ]
     },
 
-    // 3. SMART JUMP SETTINGS
+    // 3. ERROR CHECKING
+    errorCheck: {
+        selectors: [
+            '[id*="lblError"]',
+            '[class*="lblError"]',
+            '.error-message',
+            '#MainContent_lblError'
+        ]
+    },
+
+    // 4. SMART JUMP SETTINGS
     enableSmartJump: true,
 
     // 2. PAGE SEQUENCE
@@ -982,11 +992,39 @@ document.addEventListener('DOMContentLoaded', function () {
                     const map = SITE_CONFIG.mappings[name];
                     if (map && map.waitForElement) detectionList.push({ name: name, selector: map.waitForElement });
                 });
+
                 const detectedPage = await injectScriptWithRetry(tab.id, detectCurrentPage, [detectionList]);
+
+                // ONLY jump if:
+                // 1. Detected page is different from manual selection
+                // 2. AND we are either at the very beginning (default) OR the manual selection's element is NOT visible
                 if (detectedPage && detectedPage !== manualSelection) {
+                    const manualIndex = SITE_CONFIG.pageSequence.indexOf(manualSelection);
                     const detectedIndex = SITE_CONFIG.pageSequence.indexOf(detectedPage);
-                    if (detectedIndex !== -1) {
-                        updateStatus(`Jumped to: ${detectedPage}`, "green");
+
+                    let shouldJump = false;
+                    if (manualIndex === 0) {
+                        // User left it at the first step, so jump to where they actually are
+                        shouldJump = true;
+                    } else {
+                        // User made a manual selection. Check if that manual selection's element is visible.
+                        const manualMap = SITE_CONFIG.mappings[manualSelection];
+                        const isManualVisible = manualMap && manualMap.waitForElement ?
+                            await injectScriptWithRetry(tab.id, (sel) => {
+                                let s = sel.replace('ALL:', '');
+                                if (s.indexOf('#') === -1 && s.indexOf('[') === -1 && s.indexOf('.') === -1) s = '#' + s;
+                                const el = document.querySelector(s);
+                                return !!(el && (el.offsetWidth > 0 || el.offsetHeight > 0));
+                            }, [manualMap.waitForElement]) : false;
+
+                        if (!isManualVisible) {
+                            // The manual selection isn't visible on screen, but something else IS. Jump!
+                            shouldJump = true;
+                        }
+                    }
+
+                    if (shouldJump && detectedIndex !== -1) {
+                        updateStatus(`Smart Jump to: ${detectedPage}`, "green");
                         startIndex = detectedIndex;
                         if (startStepSelect) startStepSelect.value = detectedPage;
                         await sleep(1000);
@@ -1082,6 +1120,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (dynamicSaveBtn) {
                             await clickElementInMainWorld(tab.id, dynamicSaveBtn);
                             await sleep(3000);
+
+                            // POST-SAVE ERROR CHECK
+                            const errorSelectors = SITE_CONFIG.errorCheck ? SITE_CONFIG.errorCheck.selectors : [];
+                            const saveError = await injectScriptWithRetry(tab.id, checkForPageErrors, [errorSelectors]);
+                            if (saveError) {
+                                await waitForUserIntervention(tab.id, `Save Error: ${saveError}`, pageName, previousPageName);
+                            }
                         }
                     }
                 } else {
@@ -1108,6 +1153,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     updateStatus(`[${pageName}] Clicking Next...`);
                     await clickElementInMainWorld(tab.id, mapping.nextButtonSelector);
                     await sleep(2000);
+
+                    // POST-NEXT ERROR CHECK
+                    const errorSelectors = SITE_CONFIG.errorCheck ? SITE_CONFIG.errorCheck.selectors : [];
+                    const nextError = await injectScriptWithRetry(tab.id, checkForPageErrors, [errorSelectors]);
+                    if (nextError) {
+                        await waitForUserIntervention(tab.id, `Navigation Error: ${nextError}`, pageName, previousPageName);
+                    }
                 }
             }
 
@@ -1118,7 +1170,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (allSuccess) {
                 updateStatus("Automation Fully Complete! ✅", "green");
-                showNotification("Automation", "Process Fully Completed.");
+                showNotification("Automation", "Process Fully Completed(Please recheck before submitting).");
             } else {
                 updateStatus("Automation Finished (Some items pending review) ⚠️", "orange");
                 showNotification("Automation", "Process Finished. Check checklist for pending items.");
@@ -1178,7 +1230,11 @@ function detectCurrentPage(detectionList) {
     for (const item of detectionList) {
         let sel = item.selector.replace('ALL:', '');
         if (sel.indexOf('#') === -1 && sel.indexOf('[') === -1 && sel.indexOf('.') === -1) sel = '#' + sel;
-        if (document.querySelector(sel)) return item.name;
+        const el = document.querySelector(sel);
+        // Check for existence AND visibility
+        if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0)) {
+            return item.name;
+        }
     }
     return null;
 }
@@ -1187,9 +1243,16 @@ function waitForElementOnPage(selector, timeout) {
     return new Promise(resolve => {
         let cleanSel = selector.replace('ALL:', '');
         if (cleanSel.indexOf('#') === -1 && cleanSel.indexOf('[') === -1 && cleanSel.indexOf('.') === -1) cleanSel = '#' + cleanSel;
-        if (document.querySelector(cleanSel)) return resolve(true);
+
+        const isVisible = (el) => !!(el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0));
+
+        if (isVisible(document.querySelector(cleanSel))) return resolve(true);
+
         const observer = new MutationObserver(() => {
-            if (document.querySelector(cleanSel)) { observer.disconnect(); resolve(true); }
+            if (isVisible(document.querySelector(cleanSel))) {
+                observer.disconnect();
+                resolve(true);
+            }
         });
         observer.observe(document.body, { childList: true, subtree: true });
         setTimeout(() => { observer.disconnect(); resolve({ error: 'Timeout' }); }, timeout);
